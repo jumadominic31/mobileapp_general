@@ -1,0 +1,101 @@
+<ion-view cache-view="false" view-title="Select seats  <i style='float:right' >Fare-{{fare}}</i>" data-ng-init="init()">
+  <ion-content>
+  <br>
+        <center><div class="stop">
+          <div style="float:left">
+                <div class="simg">
+                     <img src="images/bus.png">
+                </div>
+                <div class="stype">
+                    <h4>Available </h4>
+                </div>
+           </div>
+            
+           <div style="float:left">    
+                <div class="simg">
+                     <img  src="images/bus-green.png">
+                </div>
+                <div class="stype">
+                    <h4>Selected </h4>
+                </div>
+           </div>
+            
+           <div style="float:left">     
+                <div class="simg">
+                    <img src="images/bus-red.png">
+                </div>
+                <div class="stype">
+                    <h4>Booked </h4>
+                </div>
+            </div>    
+          </div>
+          </center>
+        
+          <br>
+        <center>
+        <div class="busstruc">
+        <center><ion-spinner icon="spiral" ng-show="loading"></ion-spinner></center>
+          <table class="cleft" ng-show="loadings" >
+              <tr ng-repeat ="s in seatstructure1 track by $index"  > 
+                  <td ng-switch on="seat(s)" class="seat"  >
+                      <img  ng-switch-when="booked"    src="images/bus-red.png"  >
+                      <img  ng-switch-when="availed"    src="images/bus-green.png" ng-click="bookrow1(s)" >
+                      <img  ng-switch-when="block" src="images/bus.png"   >
+                       <img  ng-switch-when="xx"  class="seat_hide"   src="images/bus.png" >
+                      <img  ng-switch-default src="images/bus.png" ng-click="bookrow1(s)"  >
+                  </td>
+              </tr>
+          </table>
+          <table class="cleft">
+              <tr ng-repeat ="s in seatstructure2 track by $index"  > 
+                  <td ng-switch on="seat(s)" class="seat"    >
+                      <img  ng-switch-when="booked"    src="images/bus-red.png"  >
+                      <img  ng-switch-when="availed"    src="images/bus-green.png"  ng-click="bookrow2(s)">
+                      <img  ng-switch-when="block" src="images/bus.png"   >
+                       <img  ng-switch-when="xx"   class="seat_hide"  src="images/bus.png" >
+                      <img  ng-switch-default src="images/bus.png"  ng-click="bookrow2(s)"  >
+                  </td>
+              </tr>
+          </table>
+          <table class="cleft">
+              <tr ng-repeat ="s in seatstructure3 track by $index" > 
+                  <td ng-switch on="seat(s)" class="seat"  >
+                      <img  ng-switch-when="booked"    src="images/bus-red.png"  >
+                      <img  ng-switch-when="availed"    src="images/bus-green.png" ng-click="bookrow3(s)"  >
+                       <img  ng-switch-when="xx"   class="seat_hide" src="images/bus.png" >
+                        <img  ng-switch-when="block" src="images/bus.png"   >
+                      <img  ng-switch-default src="images/bus.png"  ng-click="bookrow3(s)" >
+                  </td>
+              </tr>
+          </table>
+          <table class="cleft">
+              <tr ng-repeat ="s in seatstructure4 track by $index"> 
+                  <td ng-switch on="seat(s)" class="seat" >
+                      <img  ng-switch-when="booked"    src="images/bus-red.png"  >
+                      <img  ng-switch-when="availed"    src="images/bus-green.png"  ng-click="bookrow4(s)" >
+                       <img  ng-switch-when="xx"   class="seat_hide" src="images/bus.png" >
+                       <img  ng-switch-when="block" src="images/bus.png"   >
+                      <img  ng-switch-default src="images/bus.png"  ng-click="bookrow4(s)"  >
+                  </td>
+              </tr>
+          </table>
+          <table class="cleft">
+              <tr ng-repeat ="s in seatstructure5 track by $index"> 
+                  <td ng-switch on="seat(s)" class="seat" >
+                      <img  ng-switch-when="booked"    src="images/bus-red.png"  >
+                      <img  ng-switch-when="block" src="images/bus.png"   >
+                      <img  ng-switch-when="availed"    src="images/bus-green.png" ng-click="bookrow5(s)" >
+                       <img  ng-switch-when="xx"   class="seat_hide" src="images/bus.png" >
+                       <img  ng-switch-default src="images/bus.png"  ng-click="bookrow5(s)" >
+                  </td>
+              </tr>
+          </table>
+          <img class="cleft stear" ng-show="stear" src="images/stearing.jpg"  >
+       </div>
+       </center>    
+       <br>
+  </ion-content>
+  <div class="bar bar-footer  barfooter" ng-click="booknow()">
+        <div class="title ">{{bstatus.s}}</div>
+    </div>
+</ion-view>

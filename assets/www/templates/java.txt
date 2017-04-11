@@ -1,0 +1,396 @@
+package io.ionic.keyboard;
+
+import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaInterface;
+import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.CordovaWebView;
+import org.apache.cordova.PluginResult;
+import org.apache.cordova.PluginResult.Status;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.content.Context;
+import android.graphics.Rect;
+import android.os.Bundle;
+import android.os.PowerManager;
+import android.text.format.Time;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.View;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
+import android.view.inputmethod.InputMethodManager;
+
+import com.hasotech.avanettech709407.MainActivity;
+import com.hasotech.avanettech709407.R;
+
+import java.io.IOException;
+
+import hdx.HdxUtil;
+import io.ionic.keyboard.android_serialport_api.sample3.ConsoleActivity;
+
+public class IonicKeyboard extends CordovaPlugin {
+    byte [] Status_Buffer=new byte[300];
+    boolean Status_Start_Falg = false;
+    int Status_Buffer_Index = 0;
+    Time time = new Time();
+    int TimeSecond;
+    private final byte  HDX_ST_NO_PAPER1 = (byte)(1<<0);
+    private final byte  HDX_ST_HOT       = (byte)(1<<4);
+    private final byte  HDX_ST_WORK      = (byte)(1<<5);
+
+    public void initialize(CordovaInterface cordova, CordovaWebView webView) {
+        super.initialize(cordova, webView);
+
+    }
+
+    public void sendCommand(int... command) {
+        try {
+            for (int i = 0; i < command.length; i++) {
+                mOutputStream.write(command[i]);
+                // Log.e(TAG,"command["+i+"] = "+Integer.toHexString(command[i]));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // / sleep(1);
+    }
+
+    void setStatus_Buffer_Index(int v)
+    {
+        Status_Buffer_Index=v;
+    }
+
+
+    public void PrinterPowerOnAndWaitReady() {
+        HdxUtil.SetPrinterPower(1);
+    }
+
+    public boolean Warning_When_Not_Normal()
+    {
+        if(  Printer_Is_Normal() )
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+
+        }
+    }
+
+    byte Get_Printer_Status()
+    {
+        Status_Buffer[0]=0;
+        Status_Buffer[1]=0;
+        Status_Start_Falg = true;
+        setStatus_Buffer_Index(0);
+        sendCommand(0x1b,0x76);
+       // Log.i(TAG,"Get_Printer_Status->0x1b,0x76");
+        Time_Check_Start();
+
+        while(true)
+        {
+            if(getStatus_Buffer_Index()>0)
+            {
+
+                Status_Start_Falg = false;
+                //Log.e(TAG,"Get_Printer_Status :"+Status_Buffer[0]);
+                return Status_Buffer[0] ;
+            }
+            if(TimeIsOver(5))
+            {
+                Status_Start_Falg = false;
+                //Log.e(TAG,"Get_Printer_Status->TIME OVER:"+Status_Buffer[0]);
+                return (byte)0xff;
+
+            }
+            //sleep(50);
+        }
+    }
+
+    int getStatus_Buffer_Index()
+    {
+        return Status_Buffer_Index;
+
+    }
+
+    boolean TimeIsOver(int second) {
+
+        time.setToNow();
+        int t = time.second;
+        if (t < TimeSecond) {
+            t += 60;
+        }
+
+        if (t - TimeSecond > second) {
+            return true;
+        }
+        return false;
+    }
+
+    boolean  Printer_Is_Normal()
+    {
+        byte status;
+
+
+        status = Get_Printer_Status() ;
+
+        if(status== 0xff)
+        {
+            //Log.e(TAG,"huck time is out");
+           // Error_State="huck unkown err";
+            return  false;
+
+        }
+
+        if( (status & HDX_ST_NO_PAPER1 )>0 )
+        {
+
+           // Log.d(TAG,"huck is not paper");
+            //return false;
+        }
+        else if( (status & HDX_ST_HOT )>0 )
+        {
+            //Log.d(TAG,"huck is too hot");
+            //Error_State=getResources().getString(R.string.PrinterNotNormal1);
+            return false;
+        }
+        else
+        {
+          //  Log.d(TAG," huck is ready");
+            return true;
+        }
+     return false;
+    }
+
+    void Time_Check_Start() {
+        time.setToNow();
+        TimeSecond = time.second;
+
+    }
+
+
+
+    public boolean execute(String action,final JSONArray args, final CallbackContext callbackContext) throws JSONException {
+
+        if ("dp".equals(action)) {
+            cordova.getThreadPool().execute(new Runnable() {
+                public void run() {
+                    try {
+                        JSONObject b = args.getJSONObject(0);
+                       final int nob = b.getInt("nob");
+                       final String tfc = b.getString("tfc");
+                        Log.d("nob", " " + nob);
+                        Log.d("tfc", " " + tfc);
+                        Log.d("key", "sycc");
+                        ConsoleActivity pactivity = new ConsoleActivity();
+                        PrinterPowerOnAndWaitReady();
+                        if (!pactivity.Warning_When_Not_Normal()) {
+                            pactivity.PrinterPowerOff();
+                            return;
+                        }
+
+                        MainActivity.lock.acquire();
+
+                        String st1 = "No of booking        : "+nob;
+                        String st2 = "Total Fare Collected : "+tfc;
+                        pactivity.sendCommand(0x0a);
+                        pactivity.sendCommand(27,14); //set double height
+                        try {
+                            pactivity.sendCommand(27,97,11);
+                            pactivity.mOutputStream.write("Avanet Technologies Limited".getBytes());
+                            pactivity.sendCommand(27,20); //cancel double height
+                            pactivity.sendCommand(0x0a);
+                            pactivity.sendCommand(27,97,5);
+                            pactivity.mOutputStream.write("Oakridge Courts,C6 Naivasha Road, Nairobi".getBytes());
+                            pactivity.sendCommand(0x0a);
+                            pactivity.sendCommand(0x0a);
+                            pactivity.mOutputStream.write(st1.getBytes());
+                            pactivity.sendCommand(0x0a);
+                            pactivity.mOutputStream.write(st2.getBytes());
+                        }
+                        catch(IOException e1){
+                            e1.printStackTrace();
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+             });
+            return true;
+            }
+
+        if ("sumtkt".equals(action)) {
+            Log.d("action",action);
+            cordova.getThreadPool().execute(new Runnable() {
+                public void run() {
+                    try {
+                        JSONObject b = args.getJSONObject(0);
+                        String dater = b.getString("dater");
+                        String source = b.getString("source");
+                        String destination = b.getString("destination");
+                        String busfare  = b.getString("busfare");
+                        String[] firstname = b.getString("firstname").split(",");
+                        String[] lastname  = b.getString("lastname").split(",");
+                        String[] mobile   = b.getString("mobile").split(",");
+                        String[] idn      = b.getString("idn").split(",");
+
+                        Log.d("tkt-dater",dater);
+                        Log.d("tkt-source",source);
+                        Log.d("tkt-destination",destination);
+                        Log.d("tkt-busfare",busfare);
+                        for(int i=0;i < firstname.length;i++){
+                            Log.d("tkt-Name",firstname[i]+" "+lastname[i]);
+                            Log.d("tkt-mobile",mobile[i]);
+                            Log.d("tkt-idn",idn[i]);
+                        }
+
+                        ConsoleActivity pactivity = new ConsoleActivity();
+                        pactivity.PrinterPowerOnAndWaitReady();
+                        if (!pactivity.Warning_When_Not_Normal()) {
+                            pactivity.PrinterPowerOff();
+                            return;
+                        }
+                        pactivity.lock.acquire();
+                        pactivity.sendCommand(0x0a);
+                        pactivity.sendCommand(27, 14); //set double height
+                        try {
+                            pactivity.sendCommand(27,97,11);
+                            pactivity.mOutputStream.write("Avanet Technologies Limited".getBytes());
+                            pactivity.sendCommand(0x0a);
+                            pactivity.sendCommand(27, 20); //cancel double height
+                            pactivity.sendCommand(27,97,5);
+                            pactivity.mOutputStream.write("Oakridge Courts,C6 Naivasha Road, Nairobi".getBytes());
+                            pactivity.sendCommand(0x0a);
+                            pactivity.sendCommand(0x0a);
+                            for(int i=0;i < firstname.length;i++){
+                                String name = firstname[i]+" "+lastname[i];
+                                String s1  =" Name          :"+name;
+                                String s2  =" Id Number     :"+idn[i];
+                                String s3  =" Mobile Number :"+mobile[i];
+                                pactivity.mOutputStream.write(s1.getBytes());
+                                pactivity.sendCommand(0x0a);
+                                pactivity.mOutputStream.write(s2.getBytes());
+                                pactivity.sendCommand(0x0a);
+                                pactivity.sendCommand(0x0a);
+                                pactivity.mOutputStream.write(s3.getBytes());
+                                pactivity.sendCommand(0x0a);
+                                Log.d("tkt-Name",firstname[i]+" "+lastname[i]);
+                                Log.d("tkt-mobile",mobile[i]);
+                                Log.d("tkt-idn",idn[i]);
+                            }
+                            String s4  =" Dater         :"+dater;
+                            String s5  =" Source        :"+source;
+                            String s6  =" Destination   :"+destination;
+                            String s7  =" Fare       :"+busfare;
+                            pactivity.mOutputStream.write(s4.getBytes());
+                            pactivity.sendCommand(0x0a);
+                            pactivity.mOutputStream.write(s5.getBytes());
+                            pactivity.sendCommand(0x0a);
+                            pactivity.mOutputStream.write(s6.getBytes());
+                            pactivity.sendCommand(0x0a);
+                            pactivity.mOutputStream.write(s7.getBytes());
+                            pactivity.sendCommand(0x0a);
+
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Log.d("problem","d");
+                    }
+                }
+            });
+            return true;
+        }
+
+
+
+        if ("close".equals(action)) {
+            cordova.getThreadPool().execute(new Runnable() {
+                public void run() {
+                    //http://stackoverflow.com/a/7696791/1091751
+                    InputMethodManager inputManager = (InputMethodManager) cordova.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    View v = cordova.getActivity().getCurrentFocus();
+
+                    if (v == null) {
+                        callbackContext.error("No current focus");
+                    } else {
+                        inputManager.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                        callbackContext.success(); // Thread-safe.
+                    }
+                }
+            });
+            return true;
+        }
+
+
+        if ("show".equals(action)) {
+            cordova.getThreadPool().execute(new Runnable() {
+                public void run() {
+                    ((InputMethodManager) cordova.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE)).toggleSoftInput(0, InputMethodManager.HIDE_IMPLICIT_ONLY);
+                    callbackContext.success(); // Thread-safe.
+                }
+            });
+            return true;
+        }
+
+        if ("init".equals(action)) {
+            cordova.getThreadPool().execute(new Runnable() {
+                public void run() {
+                	//calculate density-independent pixels (dp)
+                    //http://developer.android.com/guide/practices/screens_support.html
+                    DisplayMetrics dm = new DisplayMetrics();
+                    cordova.getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
+                    final float density = dm.density;
+
+                    //http://stackoverflow.com/a/4737265/1091751 detect if keyboard is showing
+                    final View rootView = cordova.getActivity().getWindow().getDecorView().findViewById(android.R.id.content).getRootView();
+                    OnGlobalLayoutListener list = new OnGlobalLayoutListener() {
+                        int previousHeightDiff = 0;
+                        @Override
+                        public void onGlobalLayout() {
+                            Rect r = new Rect();
+                            //r will be populated with the coordinates of your view that area still visible.
+                            rootView.getWindowVisibleDisplayFrame(r);
+
+                            PluginResult result;
+
+                            int heightDiff = rootView.getRootView().getHeight() - r.bottom;
+                            int pixelHeightDiff = (int)(heightDiff / density);
+                            if (pixelHeightDiff > 100 && pixelHeightDiff != previousHeightDiff) { // if more than 100 pixels, its probably a keyboard...
+                            	String msg = "S" + Integer.toString(pixelHeightDiff);
+                                result = new PluginResult(PluginResult.Status.OK, msg);
+                                result.setKeepCallback(true);
+                                callbackContext.sendPluginResult(result);
+                            }
+                            else if ( pixelHeightDiff != previousHeightDiff && ( previousHeightDiff - pixelHeightDiff ) > 100 ){
+                            	String msg = "H";
+                                result = new PluginResult(PluginResult.Status.OK, msg);
+                                result.setKeepCallback(true);
+                                callbackContext.sendPluginResult(result);
+                            }
+                            previousHeightDiff = pixelHeightDiff;
+                         }
+                    };
+
+                    rootView.getViewTreeObserver().addOnGlobalLayoutListener(list);
+
+
+                    PluginResult dataResult = new PluginResult(PluginResult.Status.OK);
+                    dataResult.setKeepCallback(true);
+                    callbackContext.sendPluginResult(dataResult);
+                }
+            });
+            return true;
+        }
+        return false;  // Returning false results in a "MethodNotFound" error.
+    }
+
+
+}
+
+

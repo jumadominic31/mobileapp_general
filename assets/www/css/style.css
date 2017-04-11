@@ -1,0 +1,289 @@
+/* Empty. Add your own CSS if you like */
+.seat {
+	padding:2px;
+}
+
+.cleft{
+	float:left;
+}
+.seat_hide{
+	visibility: hidden;
+}
+
+.busstruc{
+	padding:30px;
+	border:1px solid #C0C0C0;
+	margin-bottom:10px;
+	margin-left:10px;
+	display:inline-block;
+	border-radius: 5px;
+	min-width: 150px;
+	min-height: 150px;
+}
+
+.cal{
+	width:215px;
+	margin-left:10px;
+	margin-bottom:10px;
+	margin-left:10px;
+	height: 430px;	
+	color:rgba(0,0,0,0.65) !important;
+}
+.stear{
+	margin-left:5px;
+	clear:left;
+}
+.bkdseats{
+	width:215px;
+	border-radius: 5px;
+	border:1px solid #C0C0C0;
+	clear:both;
+}
+.amt{
+	margin-left:3%;
+	width: 30%;
+	float:left;
+}
+/*s- seat */
+.simg{
+  width:30px;
+  float:left;
+  margin-left:2px;
+  padding-top:0px;
+  text-align:right;
+  height: 30px;
+  margin-right:1px;
+}
+.simg img{
+	height:25px;
+	width:25px;
+}
+
+.stop{
+	display: inline-block;
+	margin:0px auto;
+	clear:both;
+}
+
+.stype{
+  width:118px;
+  padding-top:0px;
+  text-align:left;
+  float:left;
+  line-height: 4px !important;
+  height:30px;
+
+}
+.seatdiv{
+	height:115px;
+	padding-top:10px;
+}
+.cals{
+	min-height:35px;
+	padding:3px;
+	padding-top:6px;
+}
+
+.fc,.stype h5{
+	line-height: 2px;	
+	color:rgba(0,0,0,0.65) !important;
+}
+
+
+.cent{
+	text-align: center;
+}
+
+.buss{
+	margin:2px;
+	font-size:24px;
+}
+.buss i {
+	margin-right: 7px;
+}
+
+.avs i{
+	margin-right:5px;
+}
+
+
+.al{
+	text-align: left;
+	font-size: 18px;
+	color:rgba(0,0,0,0.80);
+}
+.ar{
+	font-size:18px;
+	text-align: right;
+	color:rgba(0,0,0,0.65);
+}
+
+.bts{
+	text-align: center !important;
+	color:rgba(0,0,0,0.80);
+	font-size: 18px;
+}
+
+.cuslist{
+  background-color:rgba(50,79,130,0);
+
+}
+.subhead{
+	font-size:20px !important;
+}
+.cust-list .item{
+	padding:3px !important;
+	font-weight: 200 !important;
+	border-color:rgba(0,0,0,0.10) !important;
+}
+.cust-list{
+	min-height: 30px !important
+	max-height: 150px !important;
+	overflow: auto !important;
+}
+/* Passenger info */
+.head-p{
+	padding:7px;
+	box-shadow: 0 2px 1px rgba(0, 0, 0, 0.3);
+	background-color: #324F82;
+	color:white;
+}	
+
+/*Browser */
+.customcard{
+	box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3) !important;
+}
+
+.customcard1{
+	box-shadow: 0 1px 20px rgba(0, 0, 0, 0.3) !important;
+    padding:0px !important;
+}
+
+
+.h5-b{
+	padding-top:5px !important;
+}
+
+.rad{
+	-webkit-appearance:radio !important;
+	margin-right:3px !important;
+}
+
+.seat > img{
+	height: 40px !important;
+	width:40px !important;
+}
+
+table > .cleft{
+	margin-left:10px;
+}
+
+.crow{
+	width: 100%;
+}
+
+.citem{
+	white-space: normal !important;
+	padding:2px !important;
+	padding-top:5px !important;
+}
+
+.btwidth{
+	min-width:85px;
+}
+
+.spwidth{
+	min-width: 160px;
+}
+
+.headpanel{
+		background-color: #324F82;
+		color:white;
+}
+
+.seatcss{
+	width:50%;
+	text-align:center;
+	color:rgba(0,0,0,0.80);
+}
+
+.cls textarea{
+  padding-right: 5px !important	;
+  border:1px solid black;
+
+}
+
+.fright{
+	float:right !important;
+}
+
+.cselect:hover{
+ background-color: #324F82 !important;
+}
+
+.iconsize{
+	font-size:22px;
+	color:rgba(0,0,0,0.6) !important;
+}
+
+.menu.menu-left{
+	width: calc(100% - 30px) !important;
+}
+.menu-open .menu-content{
+	transform: translate3d(calc(100% - 30px), 0px, 0px) !important;
+}
+
+.spinerdot{
+	padding-top:8px;
+}
+.sspwidth{
+	width: 80px;
+}
+.bsum{
+	padding-right: 20px !important;
+}
+
+.custom-calm{
+	background-color: #11c1f3 !important;
+}
+
+.cwhite{
+	color:white;
+	font-weight: bold;
+}
+
+.bstyle{
+		min-height: initial !important;
+		background-color: rgb(107, 115, 126) !important;
+}
+
+.icolor{
+	color:rgba(0,0,0,0.6) !important;
+	font-size: 20px;
+}
+
+.mfonts.item.item-complex a.item-content{
+	color:rgba(0,0,0,0.5) !important;
+}
+.formfont{
+color:rgba(0,0,0,0.5) !important;
+}
+.barfooter{
+	background-color: rgb(107, 115, 126) !important;
+	color:white !important;
+}
+.logwidth{
+	width: 120px;
+}
+
+.contentcolor{
+	background-color:rgba(0,0,0,0.1);
+}
+
+.hcolor{
+	color: #002744;
+}
+
+.iu{
+	padding-top:2px;
+}

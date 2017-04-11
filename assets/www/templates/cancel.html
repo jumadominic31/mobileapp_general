@@ -1,0 +1,61 @@
+<ion-view cache-view="false" view-title="Ticket Cancellation">
+  <ion-content>
+    <div class="card">
+        <div class="list">
+          <div class="item item-divider">
+             <center>Ticket Details</center>
+          </div>
+           <a class="item" >
+           <div class="row crow">
+             <div class="col col-50 ar">
+                   Bus Name :
+                </div>
+                <div class="col col-50 al">
+                    {{bk.bname}} ( {{bk.btype}} )
+              </div>   
+            </div>
+            <div class="row crow">
+             <div class="col col-50 ar">
+                   Ticket :
+                </div>
+                <div class="col col-50 al">
+                    {{bk.cticket}}
+              </div>   
+            </div>
+            <div class="row crow">
+             <div class="col col-50 ar">
+                  Seat Number :
+                </div>
+                <div class="col col-50 al">
+                    {{bk.seat}}
+              </div>   
+            </div> 
+            <div class="row crow">
+             <div class="col col-50 ar">
+                  Paid Amount :
+                </div>
+                <div class="col col-50 al">
+                    {{bk.camt}}
+              </div>   
+            </div>  
+           </a>
+        </div>
+        <div class="item item-divider">
+         <center>Cancel seat</center>
+        </div>
+        <label class="item item-input cls">
+            <span class="input-label seatcss">Seat number</span>
+             <span class="input-label "><textarea ng-model="cl"></textarea> 
+         </label>
+         <br>
+         <center><button class="btwidth button button-balanced" ng-show="cancelbutton" ng-click="changing(cl)">
+              {{can}}
+        </button>
+        <button class="btwidth button button-stable"  ng-click="back()">
+              Back
+        </button>
+        </center>
+        <br>
+          </div>        
+  </ion-content>
+</ion-view>

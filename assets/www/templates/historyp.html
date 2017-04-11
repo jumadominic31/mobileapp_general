@@ -1,0 +1,42 @@
+<ion-view cache-view="false" view-title="History">
+  <ion-content >
+
+  <center><ion-spinner icon="android" ng-show="loading"></ion-spinner></center>   
+    <div class="list cuslist">
+     <a class="item" ng-show="notfound">
+            <center><h3>No Tickets found</h3></center>
+     </a>
+     <a class="item  citem"  ng-if="dataLoaded"  ng-repeat="b in results track by $index" ng-click="cancel(b.bus_id,b.ticket,b.Date_of_Journey,b.Bus_name)">
+          <center><div class="positive buss">
+                <i class="ion-android-bus"></i>{{b.Bus_name}} ({{b.bus_type}})
+                </div>
+           </center>
+            <div class="row">
+                <div class="col col-50 ar">
+                   Booked Seats :
+                </div>
+                <div class="col col-50 al">
+                    {{b.Total_Passengers}} 
+                </div>   
+            </div>
+            <div class="row">
+                <div class="col col-50 ar">
+                   Date of journey:
+                </div>
+                <div class="col col-50 al">
+                  {{b.Date_of_Journey}}
+                </div>   
+            </div>
+            <div  class="row">
+                <div class="col bts">
+                     {{b.From}} - {{b.to}}
+                </div>
+            </div>
+      </a>
+    
+    </div>
+  
+  </ion-content>
+</ion-view>
+
+

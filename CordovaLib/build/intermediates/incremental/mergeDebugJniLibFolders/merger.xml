@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="E:\Avanet\AVTTMS\Android app\DOD\Aventbus\Avanet_Var\CordovaLib\src\main\jniLibs"/></dataSet><dataSet config="debug"><source path="E:\Avanet\AVTTMS\Android app\DOD\Aventbus\Avanet_Var\CordovaLib\src\debug\jniLibs"/></dataSet></merger>
+<merger version="3"><dataSet config="main"><source path="D:\Personally\AvaNet\AVT TMS\DOD\Android\Aventbus\Avanet_Var\mobileapp\CordovaLib\src\main\jniLibs"/></dataSet><dataSet config="debug"><source path="D:\Personally\AvaNet\AVT TMS\DOD\Android\Aventbus\Avanet_Var\mobileapp\CordovaLib\src\debug\jniLibs"/></dataSet></merger>

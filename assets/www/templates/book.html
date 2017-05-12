@@ -8,6 +8,10 @@
             <div class="list"  ng-repeat = "d in dnarray track by $index ">
             <div class="item item-divider">{{$index + 1}}.Passenger</div>
             <label class="item item-input">
+                <span class="input-label">Fare Amount</span>
+                <input type="number" ng-model="busfare[d]" placeholder="Fare" >
+            </label>
+            <label class="item item-input">
                 <span class="input-label">First Name</span>
                 <input type="text" ng-model="fn[d]" placeholder="First name" >
             </label>

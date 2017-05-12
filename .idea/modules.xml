@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Avanet_Var.iml" filepath="$PROJECT_DIR$/Avanet_Var.iml" />
       <module fileurl="file://$PROJECT_DIR$/CordovaLib/CordovaLib.iml" filepath="$PROJECT_DIR$/CordovaLib/CordovaLib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mobileapp.iml" filepath="$PROJECT_DIR$/mobileapp.iml" />
     </modules>
   </component>
 </project>

@@ -337,8 +337,8 @@ angular.module('starter.controllers', [])
    var available = [];
    $scope.booked = [];$scope.bkdseats="";
    $scope.loading = true; $scope.stear=false;$scope.loadings = false;
-   var busfare = "",bppoints = [];
-   $scope.busfare = 0;$scope.bpoints = [];
+   //var busfare = "",bppoints = [];
+   //$scope.busfare = 0;$scope.bpoints = [];
 
    if($scope.st.trip == "one"){
       var dater = $scope.st.dt; 
@@ -351,8 +351,8 @@ angular.module('starter.controllers', [])
 }
    $http.get("http://www.avanettech.co.ke/avttms/app/view_seat_result.php?bus_id="+$scope.st.busid+"&datepicker="+dater).success(function(response){
         console.log("http://www.avanettech.co.ke/avttms/app/view_seat_result.php?bus_id="+$scope.st.busid+"&datepicker="+dater);
-        $scope.fare = response[0].Bus_fare;
-        $scope.st.busfare  = $scope.fare;
+        //$scope.fare = response[0].Bus_fare;
+        //$scope.st.busfare  = $scope.fare;
         $scope.spark = function(){
         $scope.seatstructure1 = response[0].Bus_structure10.split(',').reverse();
         $scope.seatstructure2 = response[0].Bus_structure20.split(',').reverse();
@@ -395,8 +395,8 @@ angular.module('starter.controllers', [])
       $scope.spark();$scope.fires();$scope.fires();$scope.fires();$scope.fires();
       $scope.fires();$scope.removecl();$scope.loading = false; $scope.stear=true; 
       $scope.loadings=true; 
-        busfare = response[0].Bus_fare;
-        $scope.st.busfare = busfare;
+        //busfare = response[0].Bus_fare;
+        //$scope.st.busfare = busfare;
         if(response[0].booked_seat != null){
             $scope.booked = response[0].booked_seat.split(',');
          }
@@ -460,7 +460,7 @@ angular.module('starter.controllers', [])
           } 
 
           $scope.bkdseats = $scope.bkdseats.substr(1);
-          $scope.busfare = $scope.availed.length * busfare;
+          //$scope.busfare = $scope.availed.length * busfare;
      }
 
      $scope.booknow = function() {
@@ -514,15 +514,15 @@ angular.module('starter.controllers', [])
    } 
 
   //$scope.tems = [];
-  $scope.mbn={};$scope.fn= {};$scope.ln = {};$scope.idn = {};
+  $scope.mbn={};$scope.busfare={}; $scope.fn= {};$scope.ln = {};$scope.idn = {};
    $scope.dnarray = $scope.st.tkts.split(',');
    $scope.but = true;
 
   $scope.caller = function(){
 
-    $scope.fnn = "";$scope.lnn="";$scope.mbnn="";$scope.idnn="";
+    $scope.fnn = "";$scope.lnn="";$scope.mbnn="";$scope.busfaren="";$scope.idnn="";
   for(var i=0;i < $scope.dnarray.length ; i++){
-      if($scope.fn[$scope.dnarray[i]] && $scope.ln[$scope.dnarray[i]] && $scope.idn[$scope.dnarray[i]]  && $scope.mbn[$scope.dnarray[i]] ){
+      if($scope.fn[$scope.dnarray[i]] && $scope.ln[$scope.dnarray[i]] && $scope.idn[$scope.dnarray[i]]  && $scope.mbn[$scope.dnarray[i]] && $scope.busfare[$scope.dnarray[i]] ){
             var tempone  =  $scope.idn[$scope.dnarray[i]];
             var tes = (tempone+"").length;
              console.log('tempone'+ tes);
@@ -535,7 +535,7 @@ angular.module('starter.controllers', [])
               }
               var temptwo = $scope.mbn[$scope.dnarray[i]];
               var tess = (temptwo+"").length;
-              console.log('temptwo'+tess); 
+              console.log('temptwo'+tess);
               if(tess < 10 || tess > 13 ){
                   var alertPopup = $ionicPopup.alert({
                   title: 'Form submission failure',
@@ -543,9 +543,20 @@ angular.module('starter.controllers', [])
                 });
                   return false;
               }
+              var tempthree = $scope.busfare[$scope.dnarray[i]];
+                var tesss = (tempthree+"").length;
+                console.log('tempthree'+tesss);
+                if(tesss < 1 || tesss > 4 ){
+                    var alertPopup = $ionicPopup.alert({
+                    title: 'Form submission failure',
+                   template:'<center>Please enter fare correctly </center>'
+                  });
+                    return false;
+              }
               $scope.fnn += ','+ $scope.fn[$scope.dnarray[i]];
               $scope.lnn  += ','+ $scope.ln[$scope.dnarray[i]];
               $scope.mbnn  += ','+ $scope.mbn[$scope.dnarray[i]];
+              $scope.busfaren  += ','+ $scope.busfare[$scope.dnarray[i]];
               $scope.idnn  += ','+ $scope.idn[$scope.dnarray[i]];
 
         }else{
@@ -561,11 +572,13 @@ angular.module('starter.controllers', [])
     $scope.lnn  = $scope.lnn.substr(1);
     $scope.idnn  = $scope.idnn.substr(1);
     $scope.mbnn  = $scope.mbnn.substr(1);
+    $scope.busfaren  = $scope.busfaren.substr(1);
 
     $scope.st.fn = $scope.fnn;
     $scope.st.ln = $scope.lnn;
     $scope.st.idn = $scope.idnn;
     $scope.st.mbn = $scope.mbnn;
+    $scope.st.busfare = $scope.busfaren;
     console.log("success");
      $scope.book(); 
   }
@@ -578,7 +591,7 @@ angular.module('starter.controllers', [])
      $scope.printer="Booking...";
     if($scope.st.trip == "one"){     
           console.log(1);
-           var geturl = $scope.url+"booked_seat.php?Busid="+$scope.st.busid+"&dat="+$scope.st.dt+"&seat_id="+$scope.st.tkts+"&fare="+$scope.st.busfare+"&frm="+$scope.st.sour+"&to="+$scope.st.dest+"&agent_id="+$scope.st.agent_id+"&firstname="+$scope.fnn+"&lastname="+$scope.lnn+"&id="+$scope.idnn+"&mob="+$scope.mbnn;     
+           var geturl = $scope.url+"booked_seat.php?Busid="+$scope.st.busid+"&dat="+$scope.st.dt+"&seat_id="+$scope.st.tkts+"&fare="+$scope.busfaren+"&frm="+$scope.st.sour+"&to="+$scope.st.dest+"&agent_id="+$scope.st.agent_id+"&firstname="+$scope.fnn+"&lastname="+$scope.lnn+"&id="+$scope.idnn+"&mob="+$scope.mbnn;
            $http.get(geturl).success(function(response){ 
            console.log(response); 
             var checkst = response[0];     
@@ -616,7 +629,7 @@ angular.module('starter.controllers', [])
     }else{
        if($scope.st.trip == "round" && $scope.st.tflag == "1"){
             console.log(2);
-           var geturl = $scope.url+"booked_seat.php?Busid="+$scope.st.busid+"&dat="+$scope.st.dt+"&seat_id="+$scope.st.tkts+"&fare="+$scope.st.busfare+"&frm="+$scope.st.sour+"&to="+$scope.st.dest+"&agent_id="+$scope.st.agent_id+"&firstname="+$scope.fnn+"&lastname="+$scope.lnn+"&id="+$scope.idnn+"&mob="+$scope.mbnn;       
+           var geturl = $scope.url+"booked_seat.php?Busid="+$scope.st.busid+"&dat="+$scope.st.dt+"&seat_id="+$scope.st.tkts+"&fare="+$scope.busfaren+"&frm="+$scope.st.sour+"&to="+$scope.st.dest+"&agent_id="+$scope.st.agent_id+"&firstname="+$scope.fnn+"&lastname="+$scope.lnn+"&id="+$scope.idnn+"&mob="+$scope.mbnn;
             $http.get(geturl).success(function(response){  
             var checkst = response[0];     
             if(checkst.status == "success"){
@@ -651,7 +664,7 @@ angular.module('starter.controllers', [])
           console.log(2);
          }else if($scope.st.tflag == 2){
            console.log(3); 
-           var geturl = "http://www.avanettech.co.ke/avttms/app/booked_seat.php?Busid="+$scope.st.busid+"&dat="+$scope.st.rdt+"&seat_id="+$scope.st.tkts+"&fare="+$scope.st.busfare+"&frm="+$scope.st.dest+"&to="+$scope.st.sour+"&agent_id="+$scope.st.agent_id+"&firstname="+$scope.fnn+"&lastname="+$scope.lnn+"&id="+$scope.idnn+"&mob="+$scope.mbnn;
+           var geturl = "http://www.avanettech.co.ke/avttms/app/booked_seat.php?Busid="+$scope.st.busid+"&dat="+$scope.st.rdt+"&seat_id="+$scope.st.tkts+"&fare="+$scope.busfaren+"&frm="+$scope.st.dest+"&to="+$scope.st.sour+"&agent_id="+$scope.st.agent_id+"&firstname="+$scope.fnn+"&lastname="+$scope.lnn+"&id="+$scope.idnn+"&mob="+$scope.mbnn;
            $http.get(geturl).success(function(response){  
             var checkst = response[0];     
             if(checkst.status == "success"){ 
@@ -772,7 +785,7 @@ angular.module('starter.controllers', [])
       }
       $scope.printer="printing..";
        var jsonn = {func:"sum",dater:$scope.dater,source:$scope.source,busname:$scope.busname,busaddress:$scope.busaddress,destination:$scope.destination,
-      busfare:$scope.busfare,firstname:$scope.st.fn,lastname:$scope.st.ln,mobile:$scope.st.mbn,
+      busfare:$scope.st.busfare,firstname:$scope.st.fn,lastname:$scope.st.ln,mobile:$scope.st.mbn,
       idn:$scope.st.idn,ticket:$scope.st.tikno,total:$scope.total,seat:$scope.st.tkts,busid:$scope.st.bbname,agent:$scope.st.agentname};
 
       console.log(jsonn);

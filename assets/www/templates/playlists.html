@@ -3,7 +3,7 @@
  <form ng-submit="search()">
   <div class="card customcard">
   <div class="list">
-    <label class="formfont item item-input item-select">
+    <!-- <label class="formfont item item-input item-select">
        <span class="input-label formfont" ><i class="ion-ios-location iconsize "> </i>From</span>
        <ion-spinner icon="dots" class="spinerdot" ng-show="spinner1"></ion-spinner>
        <select ng-model="source" class="formfont" ng-change="findto()"> 
@@ -11,7 +11,11 @@
           <option ng-repeat="c in cities track by $index" ng-value="c">{{c}}</option>
        </select>
 
-    </label> 
+    </label>-->
+      <label class="item item-input item-stacked-label">
+          <span class="input-label">From</span>
+          <input type="text" ng-model="office_name" ng-disabled="true">
+      </label>
     <label class="item item-input item-select">
          <span class="input-label formfont"><i class=" iconsize ion-ios-location-outline"> </i>To</span>
           <ion-spinner icon="dots" class="spinerdot" ng-show="spinner2"></ion-spinner>

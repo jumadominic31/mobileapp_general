@@ -7,7 +7,7 @@
                         <span class="input-label formfont"><i class=" iconsize" > </i>Filter Vehicles</span>
                         <input class="formfont" type="text" placeholder="Enter reg no" ng-model="query">
                     </label>
-                    <label class="formfont item item-input item-select">
+                    <label class="formfont item item-input item-select item-stacked-label">
                         <span class="input-label formfont" ><i class="ion-android-bus iconsize "> </i>Vehicle Number</span>
                         <ion-spinner icon="dots" class="spinerdot" ng-show="spinner1"></ion-spinner>
                         <select ng-model="selbus" class="formfont">
@@ -15,9 +15,33 @@
                             <option ng-repeat="b in buses | filter: query track by $index" ng-value="b">{{b}}</option>
                         </select>
                     </label>
+                    <label class="item item-input item-stacked-label">
+                        <span class="input-label"><i class="ion-ios-location iconsize "></i> From</span>
+                        <input type="text" ng-model="sour" placeholder="From" >
+                    </label>
+                    <label class="item item-input item-stacked-label">
+                        <span class="input-label"><i class="ion-ios-location-outline iconsize "></i> To</span>
+                        <input type="text" ng-model="dest" placeholder="To" >
+                    </label>
+                    <label class="item item-input">
+                        <span class="input-label"><i class="ion-person-stalker iconsize "></i> Num of passengers</span>
+                        <input type="number" ng-model="passnum" placeholder="Num of passengers" >
+                    </label>
+                    <label class="item item-input">
+                        <span class="input-label"><i class="ion-pricetag iconsize "></i> Collected Amount</span>
+                        <input type="number" ng-model="grossamt" placeholder="Collected" >
+                    </label>
                     <label class="item item-input">
                         <span class="input-label"><i class="ion-pricetag iconsize "></i> Service Charge</span>
                         <input type="number" ng-model="servcharge" placeholder="Service Charge" >
+                    </label>
+                    <label class="item item-input">
+                        <span class="input-label"><i class="ion-pricetag iconsize "></i> Loan</span>
+                        <input type="number" ng-model="loan" placeholder="Loan deduction" >
+                    </label>
+                    <label class="item item-input">
+                        <span class="input-label"><i class="ion-pricetag iconsize "></i> Insurance</span>
+                        <input type="number" ng-model="insurance" placeholder="Insurance deduction" >
                     </label>
                     <label class="item item-input">
                         <span class="input-label"><i class="ion-pricetag iconsize "></i> Other Charge</span>

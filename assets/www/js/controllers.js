@@ -6,6 +6,8 @@ angular.module('starter.controllers', [])
      this.sour = ""; //source city
      this.agent_id=""; //agent id
      this.agentname = ""; //agent name
+     this.office_id = "";
+     this.office_name = "";
      this.busname = ""; //bus company name
      this.busaddress = ""; //bus company address
      this.tikno = ""; //ticket number
@@ -80,7 +82,7 @@ angular.module('starter.controllers', [])
   $scope.closeLogin = function() {
     $scope.modal.hide();
   };
-  $scope.url="http://www.avanettech.co.ke/avttms/app/"
+  $scope.url="https://www.nucleurinvestments.com/posapp/"
   // Open the login modal
   $scope.login = function() {
     $scope.modal.show();
@@ -112,15 +114,18 @@ angular.module('starter.controllers', [])
   $scope.doLogin = function() {
     
       if(this.uname && this.password){    
-         console.log($scope.url+"login.php?id="+this.uname+"&pw="+this.password);
+         console.log($scope.url+"login.php?id="+this.uname+"&fname="+this.password);
      $ionicLoading.show({template: 'Logging-in'});
-     $scope.b.agentname = this.uname;
-    $http.get($scope.url+"login.php?id="+this.uname+"&pw="+this.password).success(function(response){
+     //$scope.b.agentname = this.uname;
+    $http.get($scope.url+"login.php?id="+this.uname+"&fname="+this.password).success(function(response){
       $scope.login = response[0];
       $ionicLoading.hide();
       console.log($scope.login);
       if($scope.login.status == "Success"){
-        $scope.b.agent_id = $scope.login.agent_id;
+        $scope.b.agent_id = $scope.login.userid;
+        $scope.b.agentname = $scope.login.username;
+        $scope.b.office_id = $scope.login.office_id;
+        $scope.b.office_name = $scope.login.office_name;
 
         $window.location.href="#/app/playlists"
       }
@@ -156,7 +161,7 @@ angular.module('starter.controllers', [])
 
 
  $scope.bus= bus;
- $scope.bus.sour=""
+ $scope.bus.sour="";
  $scope.bus.dest="";
  $scope.bus.trip="";
  $scope.bus.dt = "";
@@ -164,27 +169,30 @@ angular.module('starter.controllers', [])
   $scope.rdtf =false;
   $scope.dates="";
   $scope.rdates="";
-  $scope.spinner1=true;
-  $scope.spinner2=false;
-  $scope.spinner3 = false;
+  //$scope.spinner1=true;
+  $scope.spinner2 = true;
+  $scope.spinner3 = true;
   $scope.selectedbus = "";
   $scope.passname = "";
   $scope.busfare = "";
  
+    $scope.office_name = $scope.bus.office_name;
+    $scope.bus.sour = $scope.office_name; //set source
+    $scope.source = $scope.office_name;
 
-   $http.get($scope.url+"city.php").success(function(ref){
-      $scope.cities = ref;
-      $scope.spinner1  = false;
-      console.log($scope.cities);
+    $http.get($scope.url+"cities.php").success(function(ref){
+      $scope.citiess = ref;
+      $scope.spinner2  = false;
+      console.log($scope.citiess);
       });
 
-   $http.get($scope.url+"buses.php").success(function(data){
+   $http.get($scope.url+"vehicles.php").success(function(data){
          $scope.buses = data;
          $scope.spinner3  = false;
          console.log($scope.buses);
          });
 
-    $scope.findto = function(){
+    /*$scope.findto = function(){
      $scope.spinner2  = true;
      this.destination = "";
       $http.get($scope.url+"todestination.php?frm="+this.source).success(function(ref){
@@ -193,7 +201,7 @@ angular.module('starter.controllers', [])
         console.log($scope.url+"todestination.php?frm="+$scope.source);
       });
 
-    }
+    }*/
 
      var secretEmptyKey = '[$empty$]';
        $scope.stateComparator = function (state, viewValue) {
@@ -249,24 +257,24 @@ angular.module('starter.controllers', [])
                   });
           console.log($scope.trips);
        }else 
-        if( (this.dates && this.source && this.destination && this.selectedbus && this.passname && this.busfare ) &&
+        if( (this.dates && this.destination && this.selectedbus && this.passname && this.busfare ) &&
           ( (this.trip.name=="round" && this.rdates && this.dates)||(this.trip.name=="one" && this.dates) ) ){
             var datepick = this.dates;
             var datepicker = $filter('date')(new Date(datepick),'dd-MM-yyyy');
            // console.log(this.trip.name);
-            $scope.bus.sour  = this.source;
+           //$scope.bus.sour  = this.source;
             $scope.bus.dest  = this.destination;
             $scope.bus.dt    = datepicker;
             $scope.bus.selectedbus = this.selectedbus;
             $scope.bus.passname = this.passname;
             $scope.bus.busfare = this.busfare;
 
-            if(this.trip.name == "round"){
+            /*if(this.trip.name == "round"){
               var rdatepick = this.rdates;
               //alert("tripename1"+this.trip.name);
               var rdatepicker = $filter('date')(new Date(rdatepick),'dd-MM-yyyy');
               $scope.bus.rdt  = rdatepicker;
-            }
+            }*/
             //alert("tripename"+this.trip.name);
             //$scope.bus.trip = this.trip.name;
 
@@ -274,7 +282,8 @@ angular.module('starter.controllers', [])
             $scope.printer = "Booking...";
 
             console.log(1);
-            var geturl = $scope.url+"booked_seat.php?Busid="+$scope.bus.selectedbus+"&dat="+$scope.bus.dt+"&fare="+$scope.busfare+"&frm="+$scope.bus.sour+"&to="+$scope.bus.dest+"&agent_id="+$scope.bus.agent_id+"&firstname="+$scope.passname;          $http.get(geturl).success(function(response){
+            var geturl = $scope.url+"book.php?Busid="+$scope.bus.selectedbus+"&date="+$scope.bus.dt+"&fare="+$scope.bus.busfare+"&fromTown="+$scope.bus.sour+"&toTown="+$scope.bus.dest+"&user_id="+$scope.bus.agent_id+"&pass_name="+$scope.bus.passname;
+            $http.get(geturl).success(function(response){
                 console.log(geturl);
                 console.log(response);
                 var checkst = response[0];
@@ -283,11 +292,11 @@ angular.module('starter.controllers', [])
                     $scope.bus.tikno = checkst.ticket;
                     $scope.bus.busname = checkst.busname;
                     $scope.bus.busaddress = checkst.busaddress;
-                    $scope.bus.totfare = checkst.Total_Amount;
+                    $scope.bus.totfare = checkst.busfare;
                     var alertPopup = $ionicPopup.alert({
                         title: 'Ticket has been booked',
-                        template: 'your seat        :'+checkst.SeatNumber+
-                        '<br>Ticket no      :'+checkst.ticket+'<br> Total amount     :'+checkst.Total_Amount+
+                        template: 'Ticket no      :'+checkst.ticket+
+                        '<br> Fare amount     :'+checkst.busfare+
                         '<br> Date of Journey :'+checkst.Date_of_Journey
                     });
                     $scope.print();
@@ -297,7 +306,7 @@ angular.module('starter.controllers', [])
                     console.log('succ');
                     var alertPopup = $ionicPopup.alert({
                         title: 'Booking Failure',
-                        template: '<center> The seats you have selected is booked justnow </center>'
+                        template: '<center> You cannot book the vehicle now </center>'
                     });
                     $scope.printer="Retry";
 
@@ -312,16 +321,11 @@ angular.module('starter.controllers', [])
 
             });
 
-
-            console.log(geturl);
-
             $scope.print = function(){
                 $scope.printer="Booked";
                 $window.location.href="#/app/sum";
             }
             //END OF BOOKING
-
-            $window.location.href="#/app/sum";
     }
     else{
        var alertPopup = $ionicPopup.alert({

@@ -74,7 +74,47 @@ public class IonicKeyboard extends CordovaPlugin  {
                             Log.d("buspp", destination);
                             Log.d("buspp", total);
                             Log.d("buspp", agent);
-                        }else{
+                        }
+
+                        if("dreceipt".equals(func)) {
+                            String cname = b.getString("busname");
+                            String caddress = b.getString("busaddress");
+                            String deliverynum = b.getString("deliverynum");
+                            String vehowner = b.getString("vehowner");
+                            String selbus = b.getString("selbus");
+                            String source = b.getString("source");
+                            String destination = b.getString("destination");
+                            String passnum = b.getString("passnum");
+                            String grossamt = b.getString("grossamt");
+                            String servcharge = b.getString("servcharge");
+                            String othercharge = b.getString("othercharge");
+                            String totdeduct = b.getString("totdeduct");
+                            String netamt = b.getString("netamt");
+                            String agentname = b.getString("agentname");
+
+                            Calendar c = Calendar.getInstance();
+                            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            String formattedDate = df.format(c.getTime());
+
+                            Log.d("date", " " + formattedDate);
+                            Log.d("funcname", func);
+                            Log.d("cname", cname);
+                            Log.d("caddress", caddress);
+                            Log.d("deliverynum", deliverynum);
+                            Log.d("vehowner", vehowner);
+                            Log.d("selbus", selbus);
+                            Log.d("source", source);
+                            Log.d("destination", destination);
+                            Log.d("passnum", passnum);
+                            Log.d("grossamt", grossamt);
+                            Log.d("servcharge", servcharge);
+                            Log.d("othercharge", othercharge);
+                            Log.d("totdeduct", totdeduct);
+                            Log.d("netamt", netamt);
+                            Log.d("agentname", agentname);
+                        }
+
+                        if ("booksum".equals(func)){
 
                             String cname = b.getString("busname");
                             String caddress = b.getString("busaddress");

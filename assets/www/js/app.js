@@ -139,6 +139,28 @@ angular.module('starter', ['ionic','starter.controllers','ngAnimate'])
       }
     })
 
+    .state('app.delivery',{
+          url: '/delivery',
+          cache: false,
+          views: {
+            'menuContent': {
+              templateUrl: 'templates/delivery.html',
+              controller: 'deliveryCtrl'
+            }
+          }
+        })
+
+    .state('app.deliverysum',{
+              url: '/deliverysum',
+              cache: false,
+              views: {
+                'menuContent': {
+                  templateUrl: 'templates/deliverysum.html',
+                  controller: 'deliverysumCtrl'
+                }
+              }
+            })
+
   .state('app.single', {
     url: '/playlists/:playlistId',
     views: {

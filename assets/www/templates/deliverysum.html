@@ -1,0 +1,71 @@
+<ion-view cache-view="false" view-title="Delivery Receipt" cache="false">
+    <ion-content>
+        <div class="card">
+            <center>   <div class="item item-divider positive">
+                Delivery Receipt
+            </div></center>
+            <div class="list">
+                <div class="item item-divider">
+                    <button class="button sumbut button-stable" style="float:left"  ng-click="caller()"><i class="ion-printer"> {{printer}}</i></button>
+                    <button class="button sumbut  button-stable" style="float:right" ng-click="cancel()" >Home</button>
+                </div>
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Company Name</span>
+                    <input type="text" ng-model="busname" ng-disabled="true" >
+                </label>
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Company Address</span>
+                    <input type="text" ng-model="busaddress" ng-disabled="true">
+                </label>
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Delivery Number</span>
+                    <input type="text" ng-model="deliverynum" ng-disabled="true">
+                </label>
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Client Name</span>
+                    <input type="text" ng-model="vehowner" ng-disabled="true">
+                </label>
+                <label class="item item-input">
+                    <span class="input-label">Bus no  </span>
+                    <input type="text" ng-model="selbus" ng-disabled="true">
+                </label>
+                <label class="item item-input">
+                    <span class="input-label">From </span>
+                    <input type="text" ng-model="sour"  ng-disabled="true" >
+                </label>
+                <label class="item item-input">
+                    <span class="input-label">To </span>
+                    <input type="text" ng-model="dest" ng-disabled="true" >
+                </label>
+                <label class="item item-input">
+                    <span class="input-label">No. of Passengers </span>
+                    <input type="text" ng-model="passnum" ng-disabled="true">
+                </label>
+
+                <label class="item item-input">
+                    <span class="input-label">Gross Amount </span>
+                    <input type="text" ng-model="grossamt" ng-disabled="true">
+                </label>
+                <label class="item item-input">
+                    <span class="input-label">Service Charge</span>
+                    <input type="text" ng-model="servcharge" ng-disabled="true">
+                </label>
+                <label class="item item-input">
+                    <span class="input-label">Other Charge</span>
+                    <input type="text" ng-model="othercharge" ng-disabled="true">
+                </label>
+                <label class="item item-input">
+                    <span class="input-label">Total Deductions</span>
+                    <input type="text" ng-model="totdeduct" ng-disabled="true">
+                </label>
+                <label class="item item-input">
+                    <span class="input-label">Net Amount</span>
+                    <input type="text" ng-model="netamt" ng-disabled="true">
+                </label>
+            </div>
+
+            <br>
+        </div>
+
+    </ion-content>
+</ion-view>

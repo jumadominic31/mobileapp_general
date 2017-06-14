@@ -10,6 +10,7 @@
           <option ng-show="false" value=""></option>
           <option ng-repeat="c in cities track by $index" ng-value="c">{{c}}</option>
        </select>
+
     </label> 
     <label class="item item-input item-select">
          <span class="input-label formfont"><i class=" iconsize ion-ios-location-outline"> </i>To</span>
@@ -23,23 +24,32 @@
     <span class="input-label formfont"><i class="iconsize ion-ios-calendar"> </i>Date of journey</span>
     <input class="formfont" type="text" placeholder="dd-mm-yyyy" ng-model="dates" onfocus="(this.type='date')" onblur="(this.type='text')" min="{{mindt}}" ng-change="setdate(dates)" />
  </label>
+      <!-- Choose bus -->
+      <label class="item item-input">
+          <span class="input-label formfont"><i class=" iconsize" > </i>Filter Vehicles</span>
+          <input class="formfont" type="text" placeholder="Enter reg no" ng-model="query">
+      </label>
+      <label class="item item-input item-select">
+          <span class="input-label formfont"><i class=" iconsize ion-android-bus" > </i>Vehicle</span>
+          <ion-spinner icon="dots" class="spinerdot" ng-show="spinner3"></ion-spinner>
+          <select class="formfont" ng-model="selectedbus" >
+              <option ng-show="false" value=""></option>
+              <option ng-repeat="b in buses | filter: query track by $index"  ng-value="b" >{{b}}</option>
+          </select>
+      </label>
 
- <label ng-show="rdtf" class="item item-input item-stacked-label">
-    <span class="input-label formfont"><i class="iconsize ion-ios-calendar-outline"> </i>Date of return</span>
-    <input type="text" class="formfont" placeholder="dd-mm-yyyy" ng-model="rdates" onfocus="(this.type='date')" onblur="(this.type='text')" onabort="" change="(this.type='text')" min="{{minrdt}}"/>
- </label>
-
-  <label class="item item-input item-select">
-   <span class="input-label formfont"><i class="iconsize ion-arrow-swap"> </i>Trip type</span>
-   <select ng-model="trip.name" ng-change="togg()" class="formfont">
-        <option class="cselect" ng-selected="selected" value="one" >One way</option>
-        <option class="cselect" value="round" >Round </option>
-    </select>
-  </label>
+      <label class="item item-input">
+          <span class="input-label">Fare Amount</span>
+          <input type="number" ng-model="busfare" placeholder="Fare" >
+      </label>
+      <label class="item item-input">
+          <span class="input-label">Name</span>
+          <input type="text" ng-model="passname" placeholder="Enter Name" >
+      </label>
 
  </div>
   </div>  
-   <center> <button class="button  bstyle button-positive" >Search</button></center><br>
+   <center> <button class="button  bstyle button-positive" >Book!</button></center><br>
 </form>
   </ion-content>
 </ion-view>

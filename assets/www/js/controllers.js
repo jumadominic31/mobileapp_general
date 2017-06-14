@@ -3,13 +3,13 @@
 angular.module('starter.controllers', [])
 
 .service('bus',function(){
-     this.sour = ""; //source
-     this.agent_id="";
-     this.agentname = "";
-     this.busname = "";
-     this.busaddress = "";
-     this.tikno = "";
-     this.dest = ""; // destination
+     this.sour = ""; //source city
+     this.agent_id=""; //agent id
+     this.agentname = ""; //agent name
+     this.busname = ""; //bus company name
+     this.busaddress = ""; //bus company address
+     this.tikno = ""; //ticket number
+     this.dest = ""; // destination city
      this.dt = "";   //Starting date
      this.busid = ""; //bus id
      this.tkts = ""; //seats tickets
@@ -18,21 +18,33 @@ angular.module('starter.controllers', [])
      this.rdt  = ""; // Return date
      this.tflag = "1"; //trip flag
      this.cbusid = ""; // c for cancel
-     this.cticket = "";
+     this.cticket = ""; //cancel ticket variable
      this.seat = ""; //seat number
      this.camt = ""; //cancelamount
      this.bname=""; //busname
      this.btype=""; //bustype
-     this.bbname = "";
-     this.fn = ""; //name
-     this.ln = "";
+     this.bbname = ""; //
+     this.passname = ""; //passenger name
+     this.fn = ""; //first name
+     this.ln = ""; //last name
      this.pbusid= "";//print history
-     this.pdate ="";
-     this.pbusname = "";
-     this.ptick = "";//
-     this.idn = "";
-     this.mbn = "";
-     this.busfare="";
+     this.pdate ="";//print date
+     this.pbusname = "";//print busname
+     this.ptick = "";//prin ticket
+     this.idn = ""; //id number
+     this.mbn = ""; //mobile number
+     this.busfare="";//busfare
+     this.totfare=0; //total bus fare
+	 this.deliverynum = ""; //delivery number
+	 this.vehowner = ""; //vehicle owner
+	 this.passnum = ""; //number of passengers
+	 this.servcharge = ""; //service charge amount
+	 this.othercharge = ""; //other charge amount
+	 this.totdeduct = ""; //total deduction
+	 this.grossamt = ""; //gross amount
+	 this.netamt = "" //net amount
+	 this.selbus="" //selected bus to issue delivery
+	 this.selectedbus="" //selected bus for booking
 })
 
 
@@ -115,7 +127,7 @@ angular.module('starter.controllers', [])
       else {
       var alertPopup = $ionicPopup.alert({
      title: 'Login Failed',
-     template: '<center> Invalide Username or Password </center>'
+     template: '<center> Invalid Username or Password </center>'
    });
       }
     }).error(function(data){
@@ -154,13 +166,23 @@ angular.module('starter.controllers', [])
   $scope.rdates="";
   $scope.spinner1=true;
   $scope.spinner2=false;
+  $scope.spinner3 = false;
+  $scope.selectedbus = "";
+  $scope.passname = "";
+  $scope.busfare = "";
  
 
    $http.get($scope.url+"city.php").success(function(ref){
-      $scope.cities = ref;  
+      $scope.cities = ref;
       $scope.spinner1  = false;
       console.log($scope.cities);
       });
+
+   $http.get($scope.url+"buses.php").success(function(data){
+         $scope.buses = data;
+         $scope.spinner3  = false;
+         console.log($scope.buses);
+         });
 
     $scope.findto = function(){
      $scope.spinner2  = true;
@@ -227,7 +249,7 @@ angular.module('starter.controllers', [])
                   });
           console.log($scope.trips);
        }else 
-        if( (this.dates && this.source && this.destination) && 
+        if( (this.dates && this.source && this.destination && this.selectedbus && this.passname && this.busfare ) &&
           ( (this.trip.name=="round" && this.rdates && this.dates)||(this.trip.name=="one" && this.dates) ) ){
             var datepick = this.dates;
             var datepicker = $filter('date')(new Date(datepick),'dd-MM-yyyy');
@@ -235,6 +257,9 @@ angular.module('starter.controllers', [])
             $scope.bus.sour  = this.source;
             $scope.bus.dest  = this.destination;
             $scope.bus.dt    = datepicker;
+            $scope.bus.selectedbus = this.selectedbus;
+            $scope.bus.passname = this.passname;
+            $scope.bus.busfare = this.busfare;
 
             if(this.trip.name == "round"){
               var rdatepick = this.rdates;
@@ -243,12 +268,64 @@ angular.module('starter.controllers', [])
               $scope.bus.rdt  = rdatepicker;
             }
             //alert("tripename"+this.trip.name);
-            $scope.bus.trip = this.trip.name;
-          
-              $window.location.href="#/app/search";              
-    }else{
+            //$scope.bus.trip = this.trip.name;
+
+            //START OF BOOKING
+            $scope.printer = "Booking...";
+
+            console.log(1);
+            var geturl = $scope.url+"booked_seat.php?Busid="+$scope.bus.selectedbus+"&dat="+$scope.bus.dt+"&fare="+$scope.busfare+"&frm="+$scope.bus.sour+"&to="+$scope.bus.dest+"&agent_id="+$scope.bus.agent_id+"&firstname="+$scope.passname;          $http.get(geturl).success(function(response){
+                console.log(geturl);
+                console.log(response);
+                var checkst = response[0];
+                console.log(checkst.status);
+                if(checkst.status == "success"){
+                    $scope.bus.tikno = checkst.ticket;
+                    $scope.bus.busname = checkst.busname;
+                    $scope.bus.busaddress = checkst.busaddress;
+                    $scope.bus.totfare = checkst.Total_Amount;
+                    var alertPopup = $ionicPopup.alert({
+                        title: 'Ticket has been booked',
+                        template: 'your seat        :'+checkst.SeatNumber+
+                        '<br>Ticket no      :'+checkst.ticket+'<br> Total amount     :'+checkst.Total_Amount+
+                        '<br> Date of Journey :'+checkst.Date_of_Journey
+                    });
+                    $scope.print();
+                }
+
+                if(checkst.status == "failure"){
+                    console.log('succ');
+                    var alertPopup = $ionicPopup.alert({
+                        title: 'Booking Failure',
+                        template: '<center> The seats you have selected is booked justnow </center>'
+                    });
+                    $scope.printer="Retry";
+
+                }
+            }).error(function(data){
+
+                var alertPopup = $ionicPopup.alert({
+                    title: 'Network problem',
+                    template: '<center> Kindly retry again </center>'
+                });
+                $scope.printer="Retry";
+
+            });
+
+
+            console.log(geturl);
+
+            $scope.print = function(){
+                $scope.printer="Booked";
+                $window.location.href="#/app/sum";
+            }
+            //END OF BOOKING
+
+            $window.location.href="#/app/sum";
+    }
+    else{
        var alertPopup = $ionicPopup.alert({
-                    title: 'Search bus',
+                    title: 'Ticket booking',
                     template: '<center> Please fill in the missing information </center>'
                   });
     }
@@ -465,8 +542,8 @@ angular.module('starter.controllers', [])
 
      $scope.booknow = function() {
          $scope.st.amt = $scope.busfare;
-         $scope.st.tkts = $scope.bkdseats
-         if($scope.busfare < 1){
+         $scope.st.tkts = $scope.bkdseats;
+         if($scope.bkdseats < 1){
              var alertPopup = $ionicPopup.alert({
                     title: 'Seat Selection',
                     template: '<center> Please select seat to proceed booking </center>'
@@ -478,7 +555,7 @@ angular.module('starter.controllers', [])
 }])
 
 
-//Print ticket
+//Book ticket
 .controller('BookCtrl',['$rootScope','$scope','$http','$location','$window','bus','$ionicHistory','$ionicSideMenuDelegate','$ionicLoading','$ionicPopup','$timeout','$state',  function($rootScope,$scope,$http,$location,$window,bus,$ionicHistory,$ionicSideMenuDelegate,$ionicLoading,$ionicPopup,$timeout,$state) {
     $scope.$on('$ionicView.enter', function() {
    $ionicHistory.nextViewOptions({
@@ -595,9 +672,12 @@ angular.module('starter.controllers', [])
            $http.get(geturl).success(function(response){ 
            console.log(response); 
             var checkst = response[0];     
-
+            console.log(checkst.status);
             if(checkst.status == "success"){ 
               $scope.st.tikno = checkst.ticket;
+              $scope.st.busname = checkst.busname;
+              $scope.st.busaddress = checkst.busaddress;
+              $scope.st.totfare = checkst.Total_Amount;
                  var alertPopup = $ionicPopup.alert({
                  title: 'Ticket has been booked',
                  template: 'your seat        :'+checkst.SeatNumber+
@@ -633,7 +713,9 @@ angular.module('starter.controllers', [])
             $http.get(geturl).success(function(response){  
             var checkst = response[0];     
             if(checkst.status == "success"){
-             $scope.st.tikno = checkst.ticket; 
+             $scope.st.tikno = checkst.ticket;
+             $scope.st.busname = checkst.busname;
+             $scope.st.busaddress = checkst.busaddress;
                var alertPopup = $ionicPopup.alert({
                  title: 'Ticket has been booked',
                  template: 'your seat :'+checkst.SeatNumber+
@@ -669,6 +751,8 @@ angular.module('starter.controllers', [])
             var checkst = response[0];     
             if(checkst.status == "success"){ 
                $scope.st.tikno = checkst.ticket;
+               $scope.st.busname = checkst.busname;
+               $scope.st.busaddress = checkst.busaddress;
              var alertPopup = $ionicPopup.alert({
                  title: 'Ticket has been booked',
                  template: 'your seat        :'+checkst.SeatNumber+
@@ -719,8 +803,10 @@ angular.module('starter.controllers', [])
       });
      
 
-    $scope.busname = "MOYALE RAHA TRANSPORTERS";
-    $scope.busaddress = "NAIROBI";
+    $scope.busname = $scope.st.busname;
+    $scope.busaddress = $scope.st.busaddress;
+    console.log($scope.busname);
+
     if($scope.st.trip == "round" &&   $scope.st.tflag==1){
           $scope.nextb = "Next Trip";
           console.log('ne');
@@ -728,14 +814,15 @@ angular.module('starter.controllers', [])
           $scope.nextb = "Home";
        }
 
-  $scope.total = $scope.st.mbn.split(',').length * $scope.st.busfare;
-  $scope.fn = $scope.st.fn.split(','); 
+  //$scope.total = $scope.st.mbn.split(',').length * $scope.st.busfare;
+  $scope.total = $scope.st.totfare;
+  $scope.fn = $scope.st.fn.split(',');
   $scope.ln = $scope.st.ln.split(','); 
   $scope.mob = $scope.st.mbn.split(',');
   $scope.idn = $scope.st.idn.split(',');
    $scope.names = [];
   $scope.ids = [];
-  $scope.printer="Print"
+  $scope.printer="Print";
   $scope.mobs = [];
    if($scope.st.trip == "round" && $scope.st.tflag == "1"){
         $scope.source = $scope.st.dest;
@@ -795,22 +882,16 @@ angular.module('starter.controllers', [])
   });
 }])
 
-
+//Booking summary
 .controller('BooksumCtrl',['$rootScope','$scope','$http','$location','$window','bus','$ionicHistory','$ionicSideMenuDelegate','$ionicLoading','$ionicPopup','$timeout','$state',  function($rootScope,$scope,$http,$location,$window,bus,$ionicHistory,$ionicSideMenuDelegate,$ionicLoading,$ionicPopup,$timeout,$state) {
   $scope.st = bus;
    $scope.$on('$ionicView.enter', function() { //+
-
-
-
   $scope.loading =true;
   $scope.notfound = false;
   $scope.nloading=false;
   $scope.printer = "Print";
 
-    $scope.busname = "MOYALE RAHA TRANSPORTERS";
-        $scope.busaddress = "NAIROBI";
-
-   $scope.cancel = function(){
+    $scope.cancel = function(){
     $window.location.href="#/app/playlists";
    }
 
@@ -822,6 +903,8 @@ angular.module('starter.controllers', [])
                   if(response[0].status = "success"){
                       $scope.nob = response[0].total_seat;
                       $scope.tfc = "KShs. "+response[0].total_fare;
+                      $scope.busname = response[0].busname;
+                      $scope.busaddress = response[0].busaddress;
                       $scope.loading =false;
                       $scope.nloading = true;
                   }
@@ -864,7 +947,7 @@ angular.module('starter.controllers', [])
 
 }])
 
-//History Control
+//OLD - History Control
 .controller('historyCtrl',['$rootScope','$scope','$http','$filter','$location','$window','bus', '$state', function($rootScope,$scope,$http,$filter,$location,$window,bus,$state) {
   $scope.bk = bus;
    $scope.$on('$ionicView.enter', function() { //+ 
@@ -908,7 +991,7 @@ angular.module('starter.controllers', [])
 }])
 
 
-
+//Cancel ticket
 .controller('cancelCtrl',['$rootScope','$scope','$http','$location','$window','bus','$ionicHistory','$ionicSideMenuDelegate','$ionicLoading','$ionicPopup','$timeout','$state',  function($rootScope,$scope,$http,$location,$window,bus,$ionicHistory,$ionicSideMenuDelegate,$ionicLoading,$ionicPopup,$timeout,$state) {
   $scope.bk = bus;
   $scope.cl=$scope.bk.seat;
@@ -1005,9 +1088,158 @@ angular.module('starter.controllers', [])
 
 }])
 
+//Create delivery
+.controller('deliveryCtrl',['$rootScope','$scope','$http','$filter','$location','$window','bus', '$ionicHistory','$ionicSideMenuDelegate','$ionicLoading','$ionicPopup','$timeout','$state', function($rootScope,$scope,$http,$filter,$location,$window,bus,$ionicHistory,$ionicSideMenuDelegate,$ionicLoading,$ionicPopup,$timeout,$state) {
+    $scope.$on('$ionicView.enter', function() {
+    $ionicHistory.nextViewOptions({
+        disableAnimate: true,
+        disableBack: true
+    });
+    $scope.bus= bus;
+    $scope.cancel = function(){
+        $window.location.href="#/app/playlists";
+    }
+    $scope.printer = "Create delivery";
+    //$scope.selbus = ""; //bus to issue delivery
+    $scope.bus.servcharge = 0; // service charge amount
+    $scope.bus.othercharge = 0; //other charge amount
+    $scope.bus.grossamt = 0; //initialize gross amount
+    $scope.spinner1=true;
+
+    $http.get($scope.url+"buses.php").success(function(ref){
+        $scope.buses = ref;
+        $scope.spinner1  = false;
+        console.log($scope.buses);
+    });
+
+    $scope.create = function(){
+        $scope.printer = "Creating delivery...";
+        if( this.servcharge && this.selbus ){
+
+            $scope.bus.servcharge  = this.servcharge;
+            if (this.othercharge == null){
+                $scope.bus.othercharge = 0;
+            } else {
+                $scope.bus.othercharge = this.othercharge;
+            }
+            $scope.bus.selbus = this.selbus;
+
+            console.log(this.servcharge);
+            console.log(this.othercharge);
+            console.log(this.selbus);
+
+            //Execute delivery
+            var geturl = $scope.url+"delivery.php?busname="+$scope.bus.selbus+"&servch="+$scope.bus.servcharge+"&otherch="+$scope.bus.othercharge;
+            $http.get(geturl).success(function(response){
+                var checksts = response;
+                if(checksts.status == "success"){
+                    $scope.bus.deliverynum = checksts.deliverynum;
+                    $scope.bus.vehowner = checksts.ownername;
+                    $scope.bus.sour = checksts.fromcityname;
+                    $scope.bus.dest = checksts.tocityname;
+                    $scope.bus.passnum = checksts.numpass;
+                    $scope.bus.grossamt = checksts.grossamt;
+                    $scope.bus.totdeduct = checksts.totdeduct;
+                    $scope.bus.netamt = checksts.netamt;
+                    $scope.bus.agent_id = checksts.agent_id;
+                    $scope.bus.busname = checksts.busname;
+                    $scope.bus.busaddress = checksts.busaddress;
+                    $scope.bus.agentname = checksts.agent_name;
+
+                    var alertPopup = $ionicPopup.alert({
+                        title: 'Delivery receipt created',
+                        template: 'For Vehicle  :'+checksts.selbus+
+                        '<br> Delivery #        :'+checksts.deliverynum+
+                        '<br> Gross amount      :'+checksts.grossamt+
+                        '<br> Total deduction   :'+checksts.totdeduct+
+                        '<br> Net amount        :'+checksts.netamt
+                    });
+                    $scope.printer="Created";
+                    $window.location.href="#/app/deliverysum";
+                }
+                if(checksts.status == "failure"){
+                    console.log('succ');
+                    var alertPopup = $ionicPopup.alert({
+                        title: 'Created Delivery Failure',
+                        template: '<center> Please try again </center>'
+                    });
+                    $scope.printer="Retry";
+                }
+            }).error(function(data){
+
+                var alertPopup = $ionicPopup.alert({
+                    title: 'Network problem',
+                    template: '<center> Kindly retry again </center>'
+                });
+                $scope.printer="Retry";
+
+            });
+
+            console.log(geturl);
+
+        }
+
+        else {
+            var alertPopup = $ionicPopup.alert({
+            title: 'Create Delivery Warning',
+            template: '<center> Please choose vehicle and input service charge </center>'
+            });
+        }
 
 
+    }
 
+    $scope.print = function(){
+        $scope.printer="Created";
+        $window.location.href="#/app/deliverysum";
+    }
+    });
+ }])
+
+//Print delivery receipt
+.controller('deliverysumCtrl',['$rootScope','$scope','$http','$location','$window','bus','$ionicHistory','$ionicSideMenuDelegate','$ionicLoading','$ionicPopup','$timeout','$state',  function($rootScope,$scope,$http,$location,$window,bus,$ionicHistory,$ionicSideMenuDelegate,$ionicLoading,$ionicPopup,$timeout,$state) {
+    $scope.st = bus;
+
+    $scope.$on('$ionicView.enter', function() {
+        $ionicHistory.nextViewOptions({
+            disableAnimate: true,
+            disableBack: true
+    });
+
+    $scope.printer="Print";
+    $scope.busname = $scope.st.busname;
+    $scope.busaddress = $scope.st.busaddress;
+    $scope.deliverynum = $scope.st.deliverynum;
+    $scope.vehowner = $scope.st.vehowner;
+    $scope.selbus = $scope.st.selbus;
+    $scope.sour = $scope.st.sour;
+    $scope.dest = $scope.st.dest;
+    $scope.passnum = $scope.st.passnum;
+    $scope.grossamt = $scope.st.grossamt;
+    $scope.totdeduct = $scope.st.totdeduct;
+    $scope.netamt = $scope.st.netamt;
+    $scope.servcharge = $scope.st.servcharge;
+    $scope.othercharge = $scope.st.othercharge;
+	$scope.agentname = $scope.st.agentname;
+
+    $scope.cancel = function(){
+        $window.location.href="#/app/playlists";
+    }
+
+    $scope.caller = function(){
+        $scope.printer="printing..";
+        var jsonnd = {func:"dreceipt",busname:$scope.busname, busaddress:$scope.busaddress, deliverynum:$scope.deliverynum,
+        vehowner:$scope.vehowner, selbus:$scope.selbus, source:$scope.sour, destination:$scope.dest,
+        passnum:$scope.passnum, grossamt:$scope.grossamt, servcharge:$scope.servcharge,
+        othercharge:$scope.othercharge, totdeduct:$scope.totdeduct, netamt:$scope.netamt, agentname:$scope.agentname};
+      console.log(jsonnd);
+      console.log(JSON.stringify(jsonnd));
+       cordova.plugins.Keyboard.justprint(jsonnd);
+        $scope.printer="printed";
+    }
+
+    });
+}])
 
 
 .controller('historypCtrl',['$rootScope','$scope','$http','$filter','$location','$window','bus', '$state', function($rootScope,$scope,$http,$filter,$location,$window,bus,$state) {
@@ -1060,8 +1292,8 @@ angular.module('starter.controllers', [])
         disableBack: true
       });
        $ionicLoading.show({template: 'Loading'});
-      $scope.busname = "MOYALE RAHA TRANSPORTERS";
-    $scope.busaddress = "NAIROBI"
+      //$scope.busname = $scope.st.busname;
+    //$scope.busaddress = $scope.st.busaddress;
   var geturl = "http://www.avanettech.co.ke/avttms/app/ticket.php?bus_id="+$scope.st.pbusid+"&dat="+$scope.st.pdate+"&ticket="+$scope.st.ptick;
   console.log(geturl);
   $http.get(geturl).success(function(response){
@@ -1073,7 +1305,8 @@ angular.module('starter.controllers', [])
   $scope.ln = $scope.str.lastname.split(','); 
   $scope.mob = $scope.str.mob.split(',');
   $scope.idn = $scope.str.id.split(',');
-
+    $scope.busname = $scope.str.busname;
+    $scope.busaddress = $scope.str.busaddress;
   $scope.names = [];
   $scope.ids = [];
   $scope.printer="Print"
@@ -1082,7 +1315,8 @@ angular.module('starter.controllers', [])
         $scope.destination = $scope.str.to;
         $scope.dater=$scope.str.dat;
         $scope.busfare = $scope.str.fare;
-      $scope.total = $scope.str.mob.split(',').length * $scope.busfare;
+      //$scope.total = $scope.str.mob.split(',').length * $scope.busfare;
+    $scope.total = $scope.st.totfare;
 
   $scope.dnarray = $scope.str.id.split(',');
 
@@ -1127,9 +1361,3 @@ angular.module('starter.controllers', [])
 });
 
 }])
-
-
-
-
-.controller('PlaylistCtrl', function($scope, $stateParams) {
-});

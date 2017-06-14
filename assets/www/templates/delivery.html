@@ -1,0 +1,38 @@
+<ion-view cache-view="false" view-title="Create Delivery Receipt">
+    <ion-content class="padding bg">
+        <form ng-submit="search()">
+            <div class="card customcard">
+                <div class="list">
+                    <label class="item item-input">
+                        <span class="input-label formfont"><i class=" iconsize" > </i>Filter Vehicles</span>
+                        <input class="formfont" type="text" placeholder="Enter reg no" ng-model="query">
+                    </label>
+                    <label class="formfont item item-input item-select">
+                        <span class="input-label formfont" ><i class="ion-android-bus iconsize "> </i>Vehicle Number</span>
+                        <ion-spinner icon="dots" class="spinerdot" ng-show="spinner1"></ion-spinner>
+                        <select ng-model="selbus" class="formfont">
+                            <option ng-show="false" value=""></option>
+                            <option ng-repeat="b in buses | filter: query track by $index" ng-value="b">{{b}}</option>
+                        </select>
+                    </label>
+                    <label class="item item-input">
+                        <span class="input-label"><i class="ion-pricetag iconsize "></i> Service Charge</span>
+                        <input type="number" ng-model="servcharge" placeholder="Service Charge" >
+                    </label>
+                    <label class="item item-input">
+                        <span class="input-label"><i class="ion-pricetag iconsize "></i> Other Charge</span>
+                        <input type="number" ng-model="othercharge" placeholder="Other Charge" >
+                    </label>
+
+
+                </div>
+            </div>
+            <center>
+                <button class="button  bstyle button-positive" ng-click="create()">Create Delivery</button>
+                <!--<button ng-show="nloading" class="button  button-stable" ng-click="cancel()">Home </button>-->
+                <button class="button  bstyle button-positive" ng-click="cancel()" >Home</button>
+            </center>
+            <br>
+        </form>
+    </ion-content>
+</ion-view>

@@ -17,7 +17,7 @@
        under the License.
  */
 
-package com.hasotech.avanettech709407;
+package com.avanettech.avttms709407;
 
 import android.content.Context;
 import android.os.Bundle;

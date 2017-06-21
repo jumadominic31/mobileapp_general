@@ -21,8 +21,8 @@ import android.view.View;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.inputmethod.InputMethodManager;
 
-import com.hasotech.avanettech709407.MainActivity;
-import com.hasotech.avanettech709407.R;
+import com.avanettech.avttms709407.MainActivity;
+import com.avanettech.avttms709407.R;
 
 import java.io.IOException;
 

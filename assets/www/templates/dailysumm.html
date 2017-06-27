@@ -1,12 +1,15 @@
 <ion-view cache-view="false" view-title="Fuel Sale Summary">
     <ion-content>
-        <div class="card">
-            <center><div class="item item-divider positive">Fuel Sale Summary</div></center>
+        <center><ion-spinner icon="android" ng-show="loading"></ion-spinner></center>
+        <div class="list cuslist" ng-show="notfound">
+            <a class="item" ng-show="notfound">
+                <center><h1>No results found</h1></center>
+            </a>
+        </div>
+
+        <div class="card" ng-show="nloading">
             <div class="list">
-                <div class="item item-divider">
-                    <button class="button sumbut button-stable" style="float:left"  ng-click="caller()"><i class="ion-printer"> {{printer}}</i></button>
-                    <button class="button sumbut  button-stable" style="float:right" ng-click="cancel()" >{{nextb}}</button>
-                </div>
+                <div class="item item-divider spwidth">Fuel Sale Summary</div>
                 <label class="item item-input item-stacked-label">
                     <span class="input-label">Company Name</span>
                     <input type="text" ng-model="companyname" ng-disabled="true">
@@ -45,5 +48,8 @@
                 </label>
             </div>
         </div>
+        <center><button ng-show="nloading" class="button  button-balanced btwidth" ng-click="caller()">{{printer}}</button>
+            <button ng-show="nloading" class="button  button-stable" ng-click="cancel()" >Home </button>
+        </center>
     </ion-content>
 </ion-view>

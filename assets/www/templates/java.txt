@@ -21,8 +21,8 @@ import android.view.View;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.inputmethod.InputMethodManager;
 
-import com.avanettech.avttms709407.MainActivity;
-import com.avanettech.avttms709407.R;
+import com.avanettech.fuelstapp.MainActivity;
+import com.avanettech.fuelstapp.R;
 
 import java.io.IOException;
 

@@ -17,7 +17,7 @@
        under the License.
  */
 
-package com.avanettech.avttms709407;
+package com.avanettech.fuelstapp;
 
 import android.content.Context;
 import android.os.Bundle;

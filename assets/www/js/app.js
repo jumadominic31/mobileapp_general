@@ -32,57 +32,30 @@ angular.module('starter', ['ionic','starter.controllers','ngAnimate'])
     controller: 'AppCtrl'
   })
 
-  .state('app.search', {
-    url: '/search',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/search.html',
-        controller: 'SearchCtrl'
-      }
-    }
-  })
-.state('app.seat', {
-      url: '/seat',
+.state('app.sale', {
+      url: '/sale',
       views: {
         'menuContent': {
-          templateUrl: 'templates/seat.html',
-          controller: 'SeatCtrl'
-        }
-      }
-    })
-.state('app.book', {
-      url: '/book',
-      views: {
-        'menuContent': {
-          templateUrl: 'templates/book.html',
+          templateUrl: 'templates/sale.html',
           controller: 'BookCtrl'
         }
       }
     })
-.state('app.booksum', {
-      url: '/booksum',
+.state('app.salesumm', {
+      url: '/salesumm',
       views: {
         'menuContent': {
-          templateUrl: 'templates/booksum.html',
-          controller: 'BooksumCtrl'
+          templateUrl: 'templates/salesumm.html',
+          controller: 'SalesummCtrl'
         }
       }
     })
-.state('app.bdetails', {
-      url: '/bdetails',
+.state('app.dailysumm', {
+      url: '/dailysumm',
       views: {
         'menuContent': {
-          templateUrl: 'templates/bdetails.html',
-          controller: 'bdetailsCtrl'
-        }
-      }
-    })
-.state('app.sum', {
-      url: '/sum',
-      views: {
-        'menuContent': {
-          templateUrl: 'templates/sum.html',
-          controller: 'sumCtrl'
+          templateUrl: 'templates/dailysumm.html',
+          controller: 'DailysummCtrl'
         }
       }
     })
@@ -96,87 +69,12 @@ angular.module('starter', ['ionic','starter.controllers','ngAnimate'])
         }
       }
     })
-    .state('app.playlists', {
-      url: '/playlists',
-      views: {
-        'menuContent': {
-          templateUrl: 'templates/playlists.html',
-          controller: 'PlaylistsCtrl'
-        }
-      }
-    })
-
-    .state('app.history', {
-      url: '/history',
-      cache: false,
-      views: {
-        'menuContent': {
-          templateUrl: 'templates/history.html',
-          controller: 'historyCtrl'
-        }
-      }
-    })
-
-    .state('app.printsum', {
-      url: '/printsum',
-      cache: false,
-      views: {
-        'menuContent': {
-          templateUrl: 'templates/printsum.html',
-          controller: 'printsumCtrl'
-        }
-      }
-    })
-    
-    .state('app.historyp',{
-      url: '/historyp',
-      cache: false,
-      views: {
-        'menuContent': {
-          templateUrl: 'templates/historyp.html',
-          controller: 'historypCtrl'
-        }
-      }
-    })
-
-    .state('app.delivery',{
-          url: '/delivery',
-          cache: false,
-          views: {
-            'menuContent': {
-              templateUrl: 'templates/delivery.html',
-              controller: 'deliveryCtrl'
-            }
-          }
-        })
-
-    .state('app.deliverysum',{
-              url: '/deliverysum',
-              cache: false,
-              views: {
-                'menuContent': {
-                  templateUrl: 'templates/deliverysum.html',
-                  controller: 'deliverysumCtrl'
-                }
-              }
-            })
-
   .state('app.single', {
     url: '/playlists/:playlistId',
     views: {
       'menuContent': {
         templateUrl: 'templates/playlist.html',
         controller: 'PlaylistCtrl'
-      }
-    }
-  })
-
-  .state('app.cancel', {
-    url: '/cancel',
-   views: {
-      'menuContent': {
-        templateUrl: 'templates/cancel.html',
-        controller: 'cancelCtrl'
       }
     }
   });

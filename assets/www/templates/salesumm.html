@@ -1,0 +1,49 @@
+<ion-view cache-view="false" view-title="Fuel Sale Summary">
+    <ion-content>
+        <div class="card">
+            <center><div class="item item-divider positive">Fuel Sale Summary</div></center>
+            <div class="list">
+                <div class="item item-divider">
+                    <button class="button sumbut button-stable" style="float:left"  ng-click="caller()"><i class="ion-printer"> {{printer}}</i></button>
+                    <button class="button sumbut  button-stable" style="float:right" ng-click="cancel()" >{{nextb}}</button>
+                </div>
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Company Name</span>
+                    <input type="text" ng-model="companyname" ng-disabled="true">
+                </label>
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Company Address</span>
+                    <input type="text" ng-model="companyaddr" ng-disabled="true">
+                </label>
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Station</span>
+                    <input type="text" ng-model="companyaddr" ng-disabled="true">
+                </label>
+                <label class="item item-input">
+                    <span class="input-label">Receipt Number</span>
+                    <input type="text" ng-model="receiptno" ng-disabled="true">
+                </label>
+                <label class="item item-input">
+                    <span class="input-label">Vehicle Reg No</span>
+                    <input type="text" ng-model="vehregno" ng-disabled="true">
+                </label>
+                <label class="item item-input">
+                    <span class="input-label">Amount</span>
+                    <input type="text" ng-model="amount" ng-disabled="true">
+                </label>
+                <label class="item item-input">
+                    <span class="input-label">Volume</span>
+                    <input type="text" ng-model="volume" ng-disabled="true"  >
+                </label>
+                <label class="item item-input">
+                    <span class="input-label">Fuel Type</span>
+                    <input type="text" ng-model="ftype"  ng-disabled="true" >
+                </label>
+                <label class="item item-input">
+                    <span class="input-label">Payment Method</span>
+                    <input type="text" ng-model="pmethod" ng-disabled="true" >
+                </label>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>

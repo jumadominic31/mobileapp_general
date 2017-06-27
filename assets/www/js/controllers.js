@@ -2,55 +2,36 @@
 
 angular.module('starter.controllers', [])
 
-.service('bus',function(){
-     this.sour = ""; //source city
-     this.agent_id=""; //agent id
-     this.agentname = ""; //agent name
-     this.office_id = "";
-     this.office_name = "";
-     this.busname = ""; //bus company name
-     this.busaddress = ""; //bus company address
-     this.tikno = ""; //ticket number
-     this.dest = ""; // destination city
-     this.dt = "";   //Starting date
-     this.busid = ""; //bus id
-     this.tkts = ""; //seats tickets
-     this.amt = "";  //  amount
-     this.trip = ""; // Trip either round or one
-     this.rdt  = ""; // Return date
-     this.tflag = "1"; //trip flag
-     this.cbusid = ""; // c for cancel
-     this.cticket = ""; //cancel ticket variable
-     this.seat = ""; //seat number
-     this.camt = ""; //cancelamount
-     this.bname=""; //busname
-     this.btype=""; //bustype
-     this.bbname = ""; //
-     this.passname = ""; //passenger name
-     this.fn = ""; //first name
-     this.ln = ""; //last name
-     this.pbusid= "";//print history
-     this.pdate ="";//print date
-     this.pbusname = "";//print busname
-     this.ptick = "";//prin ticket
-     this.idn = ""; //id number
-     this.mbn = ""; //mobile number
-     this.busfare="";//busfare
-     this.totfare=0; //total bus fare
-	 this.deliverynum = ""; //delivery number
-	 this.vehowner = ""; //vehicle owner
-	 this.passnum = ""; //number of passengers
-	 this.servcharge = ""; //service charge amount
-	 this.othercharge = ""; //other charge amount
-	 this.totdeduct = ""; //total deduction
-	 this.grossamt = ""; //gross amount
-	 this.netamt = "" //net amount
-	 this.selbus="" //selected bus to issue delivery
-	 this.selectedbus="" //selected bus for booking
+.service('fuelstation',function(){
+     this.userid      = "";
+     this.username      = "";
+     this.password      = "";
+     this.fullname      = "";
+     this.stationid     = "";
+     this.station       = "";
+     this.vehregno      = "";
+     this.amount        = "";
+     this.volume        = "";
+     this.fueltype      = ["Diesel", "Petrol"];
+     this.payment       = ["Cash", "MPesa"];
+     this.ftype         = ""; //fuel type filled
+     this.pmethod       = ""; //payment method used
+     this.companyname   = "NUCLEUR INVESTMENTS LTD";
+     this.companyaddr   = "NAIROBI";
+     this.date          = "";
+     this.time          = "";
+     this.summ_amt      = ""; //Daily summary amount
+     this.summ_cash     = ""; //Daily summary cash amount
+     this.summ_mpesa    = ""; //Daily summary MPesa amount
+     this.summ_volume   = ""; //Daily summary volume
+     this.summ_diesel   = ""; //Daily summary diesel volume
+     this.summ_petrol   = ""; //Daily summary petrol volume
+     this.rate_diesel   = ""; //Daily petrol fuel selling rate
+     this.url           = "https://avanettech.co.ke/fuelstapp/api";
 })
 
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout,$ionicHistory,bus) {
+.controller('AppCtrl', function($scope, $ionicModal, $timeout, $ionicHistory, fuelstation) {
 
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -102,181 +83,74 @@ angular.module('starter.controllers', [])
 
 
 //Login
-.controller('BrowseCtrl',function($scope,$window,$http,$ionicSideMenuDelegate,$ionicHistory,$ionicLoading,$ionicPopup,bus){
-  $scope.b = bus;
+.controller('BrowseCtrl',function($scope,$window,$http,$ionicSideMenuDelegate,$ionicHistory,$ionicLoading,$ionicPopup,fuelstation){
 
-  $ionicHistory.nextViewOptions({
-  disableAnimate: true,
-  disableBack: true
-});
+        $scope.fs = fuelstation;
 
-  $ionicSideMenuDelegate.canDragContent(false);
-  $scope.doLogin = function() {
-    
-      if(this.uname && this.password){    
-         console.log($scope.url+"login.php?id="+this.uname+"&fname="+this.password);
-     $ionicLoading.show({template: 'Logging-in'});
-     //$scope.b.agentname = this.uname;
-    $http.get($scope.url+"login.php?id="+this.uname+"&fname="+this.password).success(function(response){
-      $scope.login = response[0];
-      $ionicLoading.hide();
-      console.log($scope.login);
-      if($scope.login.status == "Success"){
-        $scope.b.agent_id = $scope.login.userid;
-        $scope.b.agentname = $scope.login.username;
-        $scope.b.office_id = $scope.login.office_id;
-        $scope.b.office_name = $scope.login.office_name;
+        $scope.url = $scope.fs.url;
 
-        $window.location.href="#/app/playlists"
-      }
-      else {
-      var alertPopup = $ionicPopup.alert({
-     title: 'Login Failed',
-     template: '<center> Invalid Username or Password </center>'
-   });
-      }
-    }).error(function(data){
-       $ionicLoading.hide();
-              var alertPopup = $ionicPopup.alert({
-              title: '<center> No network connection </center>'
-               });                      
-            });
-      }
-
-      else{
-       var alertPopup = $ionicPopup.alert({
-          title: 'Login Failed',
-          template:'<center> Please fill in the missing information </center>'
+        $ionicHistory.nextViewOptions({
+                disableAnimate: true,
+                disableBack: true
         });
- // $window.location.href="#/app/playlists"
-}
-}
- 
+        $ionicSideMenuDelegate.canDragContent(false);
+        $scope.doLogin = function() {
+                if(this.username && this.password){
+                        console.log($scope.url+"login.php?id="+this.uname+"&fname="+this.password);
+                        $ionicLoading.show({template: 'Logging-in'});
+                        //$scope.b.agentname = this.uname;
+                        $http.get($scope.url+"login.php?id="+this.uname+"&fname="+this.password).success(function(response){
+                                $scope.login = response[0];
+                                $ionicLoading.hide();
+                                console.log($scope.login);
+                                if($scope.login.status == "Success"){
+                                        $scope.fs.userid    = $scope.login.userid;
+                                        $scope.fs.username  = $scope.login.username;
+                                        $scope.fs.fullname  = $scope.login.fullname;
+                                        $scope.fs.stationid = $scope.login.stationid;
+                                        $scope.fs.station   = $scope.login.station;
+                                        $window.location.href="#/app/sale"
+                                }
+                                else {
+                                        var alertPopup = $ionicPopup.alert({
+                                                title: 'Login Failed',
+                                                template: '<center> Invalid Username or Password </center>'
+                                        });
+                                }
+                        }).error(function(data){
+                                $ionicLoading.hide();
+                                var alertPopup = $ionicPopup.alert({
+                                        title: '<center> No network connection </center>'
+                                });
+                        });
+                }
+                else {
+                        var alertPopup = $ionicPopup.alert({
+                                title: 'Login Failed',
+                                template:'<center>Please enter correct username/password</center>'
+                        });
+                }
+        }
 })
 
 
-//Journey details
-.controller('PlaylistsCtrl',['$rootScope','$scope','$http','$filter','$location','$window','bus', '$ionicHistory','$ionicSideMenuDelegate','$ionicLoading','$ionicPopup','$timeout','$state', function($rootScope,$scope,$http,$filter,$location,$window,bus,$ionicHistory,$ionicSideMenuDelegate,$ionicLoading,$ionicPopup,$timeout,$state) {
+//Sale details
+.controller('SaleCtrl',['$rootScope','$scope','$http','$filter','$location','$window','fuelstation', '$ionicHistory','$ionicSideMenuDelegate','$ionicLoading','$ionicPopup','$timeout','$state', function($rootScope,$scope,$http,$filter,$location,$window,fuelstation,$ionicHistory,$ionicSideMenuDelegate,$ionicLoading,$ionicPopup,$timeout,$state) {
 
+        $scope.fs           = fuelstation;
 
+        $scope.url          = $scope.fs.url;
+        $scope.stationid    = $scope.fs.stationid;
+        $scope.station      = $scope.fs.station;
+        $scope.fueltype     = $scope.fs.fueltype;
+        $scope.payment      = $scope.fs.payment;
 
- $scope.bus= bus;
- $scope.bus.sour="";
- $scope.bus.dest="";
- $scope.bus.trip="";
- $scope.bus.dt = "";
- $scope.bus.rdt  = "";
-  $scope.rdtf =false;
-  $scope.dates="";
-  $scope.rdates="";
-  //$scope.spinner1=true;
-  $scope.spinner2 = true;
-  $scope.spinner3 = true;
-  $scope.selectedbus = "";
-  $scope.passname = "";
-  $scope.busfare = "";
- 
-    $scope.office_name = $scope.bus.office_name;
-    $scope.bus.sour = $scope.office_name; //set source
-    $scope.source = $scope.office_name;
-
-    $http.get($scope.url+"cities.php").success(function(ref){
-      $scope.citiess = ref;
-      $scope.spinner2  = false;
-      console.log($scope.citiess);
-      });
-
-   $http.get($scope.url+"vehicles.php").success(function(data){
-         $scope.buses = data;
-         $scope.spinner3  = false;
-         console.log($scope.buses);
-         });
-
-    /*$scope.findto = function(){
-     $scope.spinner2  = true;
-     this.destination = "";
-      $http.get($scope.url+"todestination.php?frm="+this.source).success(function(ref){
-        $scope.citiess = ref;  
-        $scope.spinner2  = false;
-        console.log($scope.url+"todestination.php?frm="+$scope.source);
-      });
-
-    }*/
-
-     var secretEmptyKey = '[$empty$]';
-       $scope.stateComparator = function (state, viewValue) {
-        return viewValue === secretEmptyKey || (''+state).toLowerCase().indexOf((''+viewValue).toLowerCase()) > -1;
-      };
-
-      var mindate = new Date();
-      $scope.mindt = mindate.getFullYear() + '-' + ('0' + (mindate.getMonth() + 1 )).slice(-2) + '-' + ('0' + mindate.getDate()).slice(-2);
-     
-        $scope.trip = {
-        name: 'one'
-      };
-
-      $scope.togg = function(){
-        if($scope.trip.name == 'one'){
-           $scope.rdtf = false;
-        }else{
-          $scope.rdtf = true;
-        }
-      }
-
-      $scope.setdate  = function(sd){
-        if(sd){
-           var parts = sd.split("-");
-           var dts = new Date(
-              parseInt(parts[0], 10),      // year
-              parseInt(parts[1], 10) - 1,  // month (starts with 0)
-              parseInt(parts[2], 10)       // date
-            );
-         
-          dts.setDate(dts.getDate() + 1);
-          parts[0] = "" + dts.getFullYear();
-          parts[1] = "" + (dts.getMonth() + 1);
-          if (parts[1].length < 2) {
-            parts[1] = "0" + parts[1];
-          }
-          parts[2] = "" + dts.getDate();
-          if (parts[2].length < 2) {
-            parts[2] = "0" + parts[2];
-          }
-          $scope.minrdt = parts.join("-");
-         }
-        this.rdates  = "";   
-      }
-
-       
-  
-  $scope.search = function(){
-      if(this.source == this.destination){
-          var alertPopup = $ionicPopup.alert({
-                    title: 'Search bus',
-                    template: '<center>From & To address cannot be same</center>'
-                  });
-          console.log($scope.trips);
-       }else 
-        if( (this.dates && this.destination && this.selectedbus && this.passname && this.busfare ) &&
-          ( (this.trip.name=="round" && this.rdates && this.dates)||(this.trip.name=="one" && this.dates) ) ){
-            var datepick = this.dates;
-            var datepicker = $filter('date')(new Date(datepick),'dd-MM-yyyy');
-           // console.log(this.trip.name);
-           //$scope.bus.sour  = this.source;
-            $scope.bus.dest  = this.destination;
-            $scope.bus.dt    = datepicker;
-            $scope.bus.selectedbus = this.selectedbus;
-            $scope.bus.passname = this.passname;
-            $scope.bus.busfare = this.busfare;
-
-            /*if(this.trip.name == "round"){
-              var rdatepick = this.rdates;
-              //alert("tripename1"+this.trip.name);
-              var rdatepicker = $filter('date')(new Date(rdatepick),'dd-MM-yyyy');
-              $scope.bus.rdt  = rdatepicker;
-            }*/
-            //alert("tripename"+this.trip.name);
-            //$scope.bus.trip = this.trip.name;
+        $scope.makesale = function(){
+        if (this.vehregno && this.amount && this.ftype && this.pmethod ) {
+                $scope.fs.vehregno  = this.vehregno;
+                $scope.fs.amount    = this.amount;
+                $scope.fs.ftype     = this.ftype;
+                $scope.fs.pmethod   = this.pmethod;
 
             //START OF BOOKING
             $scope.printer = "Booking...";
@@ -290,8 +164,7 @@ angular.module('starter.controllers', [])
                 console.log(checkst.status);
                 if(checkst.status == "success"){
                     $scope.bus.tikno = checkst.ticket;
-                    $scope.bus.busname = checkst.busname;
-                    $scope.bus.busaddress = checkst.busaddress;
+
                     $scope.bus.totfare = checkst.busfare;
                     var alertPopup = $ionicPopup.alert({
                         title: 'Ticket has been booked',
@@ -337,474 +210,20 @@ angular.module('starter.controllers', [])
 
 }])
 
-//Listing buses
-.controller('SearchCtrl',['$rootScope','$scope','$http','$filter','$location','$window','bus', '$state', function($rootScope,$scope,$http,$filter,$location,$window,bus,$state) {  
-    $scope.$on('$ionicView.enter', function() {
-  $scope.ss = bus;
-  $scope.results = []
-   $scope.notfound =false;
-   $scope.dataLoaded = false;
-   $scope.loading =true;
-   $scope.cks = false;
-   console.log($scope.ss.tflag);
-  
-   if($scope.ss.trip == "one"){
-      $scope.dater = $scope.ss.dt; 
-      console.log('one');
-      var geturl = $scope.url+"results.php?triptype=1&ter_from="+$scope.ss.sour+"&tag="+$scope.ss.dest+"&datepicker="+$scope.ss.dt;
-      console.log(geturl);
-   }else{
-   if($scope.ss.trip == "round" && $scope.ss.tflag == "1"){
-      $scope.dater = $scope.ss.dt;
-      console.log('round and 1'); 
-      var geturl = $scope.url+"results.php?triptype=1&ter_from="+$scope.ss.sour+"&tag="+$scope.ss.dest+"&datepicker="+$scope.ss.dt;
-   }else{
-    console.log('round and 2');
-      $scope.dater = $scope.ss.rdt;
-      var geturl =  $scope.url+"results.php?triptype=1&ter_from="+$scope.ss.dest+"&tag="+$scope.ss.sour+"&datepicker="+$scope.ss.rdt;
-   }
- }
-   
 
-       $http.get(geturl).success(function(response,status){     
-           
-              if(response[0]){
-                    $scope.loading =false;
-                    $scope.dataLoaded = true;
-                    $scope.results = response;
-              }else{
-                  $scope.loading=false;
-                  $scope.dataLoaded=false;
-                  $scope.notfound = true;
-              }
-        
-          console.log(geturl);
-           }).error(function(data){
-            $scope.loading =false;
-            $scope.dataLoaded = false;
-            $scope.notfound = true;
-                });
+//Print sale receipt
+.controller('SalesummCtrl',['$rootScope','$scope','$http','$location','$window','fuelstation','$ionicHistory','$ionicSideMenuDelegate','$ionicLoading','$ionicPopup','$timeout','$state',  function($rootScope,$scope,$http,$location,$window,fuelstation,$ionicHistory,$ionicSideMenuDelegate,$ionicLoading,$ionicPopup,$timeout,$state) {
 
-    
-    $scope.seats = function(bid,bbname){
-    $scope.ss.busid = bid;
-    $scope.ss.bbname = bbname;
-    $window.location.href="#/app/seat";       
-   }
- });
+        $scope.fs           = fuelstation;
 
-
-}])
-
-//Seat Selection
-.controller('SeatCtrl',['$rootScope','$scope','$http','$location','$window','bus','$ionicHistory','$ionicSideMenuDelegate','$ionicLoading','$ionicPopup','$timeout','$state',  function($rootScope,$scope,$http,$location,$window,bus,$ionicHistory,$ionicSideMenuDelegate,$ionicLoading,$ionicPopup,$timeout,$state) {
-     
-     $ionicHistory.nextViewOptions({
-        disableAnimate: false,
-        disableBack: false
-     });
-
-     $scope.$on('$ionicView.enter', function() {
-   $scope.book = function(){
-     $window.location.href="#/app/book"
-    }
-   var booked = [];
-   $scope.availed = [];
-   $scope.st = bus;
-
-   $scope.bstatus={};
-   $scope.bstatus.s = "Book Now";
-
-   var available = [];
-   $scope.booked = [];$scope.bkdseats="";
-   $scope.loading = true; $scope.stear=false;$scope.loadings = false;
-   //var busfare = "",bppoints = [];
-   //$scope.busfare = 0;$scope.bpoints = [];
-
-   if($scope.st.trip == "one"){
-      var dater = $scope.st.dt; 
-   }else{
-   if($scope.st.trip == "round" && $scope.st.tflag == "1"){
-      var dater = $scope.st.dt;
-   }else{
-      var dater = $scope.st.rdt;
-   }
-}
-   $http.get("http://www.avanettech.co.ke/avttms/app/view_seat_result.php?bus_id="+$scope.st.busid+"&datepicker="+dater).success(function(response){
-        console.log("http://www.avanettech.co.ke/avttms/app/view_seat_result.php?bus_id="+$scope.st.busid+"&datepicker="+dater);
-        //$scope.fare = response[0].Bus_fare;
-        //$scope.st.busfare  = $scope.fare;
-        $scope.spark = function(){
-        $scope.seatstructure1 = response[0].Bus_structure10.split(',').reverse();
-        $scope.seatstructure2 = response[0].Bus_structure20.split(',').reverse();
-        $scope.seatstructure3 = response[0].Bus_structure30.split(',').reverse();
-        $scope.seatstructure4 = response[0].Bus_structure40.split(',').reverse();
-        $scope.seatstructure5 = response[0].Bus_structure50.split(',').reverse();
-        $scope.bpoints = response[0].Boarding_points.split(',');
-
-
-        }
-       $scope.fires = function(){       
-       for(var ck = 0;ck < $scope.seatstructure1.length;ck++){
-          if( ($scope.seatstructure1[ck]=='' || $scope.seatstructure1[ck]=='xx') & ($scope.seatstructure2[ck]=='' || $scope.seatstructure2[ck]=='xx') & ($scope.seatstructure3[ck]=='' || $scope.seatstructure3[ck]=='xx') 
-           & ($scope.seatstructure4[ck]=='' || $scope.seatstructure4[ck]=='xx') & ($scope.seatstructure5[ck]=='' || $scope.seatstructure5[ck]=='xx') ){
-                $scope.seatstructure1.splice(ck,1);
-                $scope.seatstructure2.splice(ck,1);
-                $scope.seatstructure3.splice(ck,1);
-                $scope.seatstructure4.splice(ck,1);
-                $scope.seatstructure5.splice(ck,1);
-          }
-        }
-      }
-      var cl1 =0,cl2 =0,cl3 =.0,cl4 =0,cl5 =0;
-      $scope.removecl = function(){
-          for(var cl=0;cl<$scope.seatstructure1.length;cl++){
-              if($scope.seatstructure1[cl] == '' || $scope.seatstructure1[cl] == "xx") cl1++;
-              if($scope.seatstructure2[cl] == '' || $scope.seatstructure2[cl] == "xx") cl2++; 
-              if($scope.seatstructure3[cl] == '' || $scope.seatstructure3[cl] == "xx") cl3++; 
-              if($scope.seatstructure4[cl] == '' || $scope.seatstructure4[cl] == "xx") cl4++; 
-              if($scope.seatstructure5[cl] == '' || $scope.seatstructure5[cl] == "xx") cl5++;  
-          }
-          if(cl1 == $scope.seatstructure1.length) $scope.seatstructure1=[];
-          if(cl2 == $scope.seatstructure2.length) $scope.seatstructure2=[];
-          if(cl3 == $scope.seatstructure3.length) $scope.seatstructure3=[];
-          if(cl4 == $scope.seatstructure4.length) $scope.seatstructure4=[];
-          if(cl5 == $scope.seatstructure5.length) $scope.seatstructure5=[];
-
-      }
-
-      $scope.spark();$scope.fires();$scope.fires();$scope.fires();$scope.fires();
-      $scope.fires();$scope.removecl();$scope.loading = false; $scope.stear=true; 
-      $scope.loadings=true; 
-        //busfare = response[0].Bus_fare;
-        //$scope.st.busfare = busfare;
-        if(response[0].booked_seat != null){
-            $scope.booked = response[0].booked_seat.split(',');
-         }
-        
-        $scope.seat = function(s){
-          if(s == 'xx') return s;else
-          if(s == '')  return  'xx';else
-          if($scope.booked.indexOf(s) > -1) return 'booked';
-          if($scope.availed.indexOf(s) > -1) return 'availed';
-        }
-
-        $scope.bookrow1 = function(s){
-           if(s != 'xx' || s != '' || $scope.booked.indexOf(s) == -1 ){
-              var temp = $scope.availed.indexOf(s);
-              if(temp != -1 ) $scope.availed.splice(temp,1);   
-              else $scope.availed.push(s);
-             $scope.seatcalc();
-          } 
-        }
-        $scope.bookrow2 = function(s){
-            if(s != 'xx' || s != '' || $scope.booked.indexOf(s) == -1){
-              var temp = $scope.availed.indexOf(s);
-              if(temp != -1 ) $scope.availed.splice(temp,1);  
-              else $scope.availed.push(s);
-              $scope.seatcalc();
-              
-          }
-        }
-        $scope.bookrow3 = function(s){
-           if(s != 'xx' || s != '' || $scope.booked.indexOf(s) == -1){
-              var temp = $scope.availed.indexOf(s);
-              if(temp != -1 )  $scope.availed.splice(temp,1);   
-              else $scope.availed.push(s);
-             $scope.seatcalc();
-          }
-        }
-        $scope.bookrow4 = function(s){
-           if(s != 'xx' || s != '' || $scope.booked.indexOf(s) == -1){
-              var temp = $scope.availed.indexOf(s);
-              if(temp != -1 ) $scope.availed.splice(temp,1);  
-              else $scope.availed.push(s);
-              $scope.seatcalc();    
-          }
-        }
-        $scope.bookrow5 = function(s){
-           if(s != 'xx' || s != '' || $scope.booked.indexOf(s) == -1){
-              var temp = $scope.availed.indexOf(s);
-              if(temp != -1 ) $scope.availed.splice(temp,1);   
-              else $scope.availed.push(s);
-              $scope.seatcalc();
-             
-          }
-        }
-     }); 
-
-
-     $scope.seatcalc = function(){
-          $scope.bkdseats = "";
-          for(var j=0;j < $scope.availed.length;j++){
-              $scope.bkdseats += ','+$scope.availed[j];  
-          } 
-
-          $scope.bkdseats = $scope.bkdseats.substr(1);
-          //$scope.busfare = $scope.availed.length * busfare;
-     }
-
-     $scope.booknow = function() {
-         $scope.st.amt = $scope.busfare;
-         $scope.st.tkts = $scope.bkdseats;
-         if($scope.bkdseats < 1){
-             var alertPopup = $ionicPopup.alert({
-                    title: 'Seat Selection',
-                    template: '<center> Please select seat to proceed booking </center>'
-                  });
-         } 
-         else $window.location.href="#/app/book";
-     }   
- });
-}])
-
-
-//Book ticket
-.controller('BookCtrl',['$rootScope','$scope','$http','$location','$window','bus','$ionicHistory','$ionicSideMenuDelegate','$ionicLoading','$ionicPopup','$timeout','$state',  function($rootScope,$scope,$http,$location,$window,bus,$ionicHistory,$ionicSideMenuDelegate,$ionicLoading,$ionicPopup,$timeout,$state) {
-    $scope.$on('$ionicView.enter', function() {
-   $ionicHistory.nextViewOptions({
-        disableAnimate: true,
-        disableBack: true
-      });
-  $scope.st = bus;
-  var cflag ="";
-  $scope.printer="Book";
-  $scope.but = false;
-  /*/
-  $scope.checkid = function(ids){
-      if(ids < 5 || ids > 15 ){   
-                  var alertPopup = $ionicPopup.alert({
-                  title: 'Form submition failure',
-                 template:'<center> Id number should be 5 to 15 character </center>'
-                });
-                  return false;
-      }
-  }
-  $scope.checkmob = function(mbs){
-      if(mbs.length < 10 || mbs.length > 13 ){
-                  var alertPopup = $ionicPopup.alert({
-                  title: 'Form submition failure',
-                 template:'<center> Mobile number should be 10 - 13 number</center>'
-                });
-            return false;
-       }
-  } */
-
-   $scope.cancel = function(){
-      $window.location.href="#/app/playlists";
-   } 
-
-  //$scope.tems = [];
-  $scope.mbn={};$scope.busfare={}; $scope.fn= {};$scope.ln = {};$scope.idn = {};
-   $scope.dnarray = $scope.st.tkts.split(',');
-   $scope.but = true;
-
-  $scope.caller = function(){
-
-    $scope.fnn = "";$scope.lnn="";$scope.mbnn="";$scope.busfaren="";$scope.idnn="";
-  for(var i=0;i < $scope.dnarray.length ; i++){
-      if($scope.fn[$scope.dnarray[i]] && $scope.ln[$scope.dnarray[i]] && $scope.idn[$scope.dnarray[i]]  && $scope.mbn[$scope.dnarray[i]] && $scope.busfare[$scope.dnarray[i]] ){
-            var tempone  =  $scope.idn[$scope.dnarray[i]];
-            var tes = (tempone+"").length;
-             console.log('tempone'+ tes);
-              if(tes < 5 || tes > 15 ){
-                  var alertPopup = $ionicPopup.alert({
-                  title: 'Form submission failure',
-                 template:'<center> Id number should be 5 to 15 character </center>'
-                });
-                  return false;
-              }
-              var temptwo = $scope.mbn[$scope.dnarray[i]];
-              var tess = (temptwo+"").length;
-              console.log('temptwo'+tess);
-              if(tess < 10 || tess > 13 ){
-                  var alertPopup = $ionicPopup.alert({
-                  title: 'Form submission failure',
-                 template:'<center> Mobile number should be 10 - 13 number</center>'
-                });
-                  return false;
-              }
-              var tempthree = $scope.busfare[$scope.dnarray[i]];
-                var tesss = (tempthree+"").length;
-                console.log('tempthree'+tesss);
-                if(tesss < 1 || tesss > 4 ){
-                    var alertPopup = $ionicPopup.alert({
-                    title: 'Form submission failure',
-                   template:'<center>Please enter fare correctly </center>'
-                  });
-                    return false;
-              }
-              $scope.fnn += ','+ $scope.fn[$scope.dnarray[i]];
-              $scope.lnn  += ','+ $scope.ln[$scope.dnarray[i]];
-              $scope.mbnn  += ','+ $scope.mbn[$scope.dnarray[i]];
-              $scope.busfaren  += ','+ $scope.busfare[$scope.dnarray[i]];
-              $scope.idnn  += ','+ $scope.idn[$scope.dnarray[i]];
-
-        }else{
-           var alertPopup = $ionicPopup.alert({
-                 title: 'Form submission failure',
-                 template: '<center> All details in the form are mandatory </center>'
-              });
-      
-        return false;
-       }
-  }
-    $scope.fnn = $scope.fnn.substr(1);
-    $scope.lnn  = $scope.lnn.substr(1);
-    $scope.idnn  = $scope.idnn.substr(1);
-    $scope.mbnn  = $scope.mbnn.substr(1);
-    $scope.busfaren  = $scope.busfaren.substr(1);
-
-    $scope.st.fn = $scope.fnn;
-    $scope.st.ln = $scope.lnn;
-    $scope.st.idn = $scope.idnn;
-    $scope.st.mbn = $scope.mbnn;
-    $scope.st.busfare = $scope.busfaren;
-    console.log("success");
-     $scope.book(); 
-  }
-  
-
- 
-  console.log('tickets  '+$scope.st.tkts);
-  $scope.book = function(){
-
-     $scope.printer="Booking...";
-    if($scope.st.trip == "one"){     
-          console.log(1);
-           var geturl = $scope.url+"booked_seat.php?Busid="+$scope.st.busid+"&dat="+$scope.st.dt+"&seat_id="+$scope.st.tkts+"&fare="+$scope.busfaren+"&frm="+$scope.st.sour+"&to="+$scope.st.dest+"&agent_id="+$scope.st.agent_id+"&firstname="+$scope.fnn+"&lastname="+$scope.lnn+"&id="+$scope.idnn+"&mob="+$scope.mbnn;
-           $http.get(geturl).success(function(response){ 
-           console.log(response); 
-            var checkst = response[0];     
-            console.log(checkst.status);
-            if(checkst.status == "success"){ 
-              $scope.st.tikno = checkst.ticket;
-              $scope.st.busname = checkst.busname;
-              $scope.st.busaddress = checkst.busaddress;
-              $scope.st.totfare = checkst.Total_Amount;
-                 var alertPopup = $ionicPopup.alert({
-                 title: 'Ticket has been booked',
-                 template: 'your seat        :'+checkst.SeatNumber+
-                '<br>Ticket no      :'+checkst.ticket+'<br> Total amount     :'+checkst.Total_Amount+
-                  '<br> Date of Journey :'+checkst.Date_of_Journey
-              });                                  
-            $scope.print();
-             }
-            
-         if(checkst.status == "failure"){
-              console.log('succ');
-               var alertPopup = $ionicPopup.alert({
-                 title: 'Booking Failure',
-                 template: '<center> The seats you have selected is booked justnow </center>'
-              });
-              $scope.printer="Retry";
-
-            }            
-      }).error(function(data){
-          
-          var alertPopup = $ionicPopup.alert({
-                 title: 'Network problem',
-                 template: '<center> Kindly retry again </center>'
-              });
-           $scope.printer="Retry";
-                      
-      });     
-          
-    }else{
-       if($scope.st.trip == "round" && $scope.st.tflag == "1"){
-            console.log(2);
-           var geturl = $scope.url+"booked_seat.php?Busid="+$scope.st.busid+"&dat="+$scope.st.dt+"&seat_id="+$scope.st.tkts+"&fare="+$scope.busfaren+"&frm="+$scope.st.sour+"&to="+$scope.st.dest+"&agent_id="+$scope.st.agent_id+"&firstname="+$scope.fnn+"&lastname="+$scope.lnn+"&id="+$scope.idnn+"&mob="+$scope.mbnn;
-            $http.get(geturl).success(function(response){  
-            var checkst = response[0];     
-            if(checkst.status == "success"){
-             $scope.st.tikno = checkst.ticket;
-             $scope.st.busname = checkst.busname;
-             $scope.st.busaddress = checkst.busaddress;
-               var alertPopup = $ionicPopup.alert({
-                 title: 'Ticket has been booked',
-                 template: 'your seat :'+checkst.SeatNumber+
-                '<br> Ticket no :'+checkst.ticket+'<br> Total amount:'+checkst.Total_Amount+
-                  '<br> Date of Journey :'+checkst.Date_of_Journey
-              });                     
-            $scope.print();
-          
-             }
-            
-         if(checkst.status == "failure"){
-              console.log('succ');
-               var alertPopup = $ionicPopup.alert({
-                 title: 'Booking Failure',
-                 template: '<center> The seats you have selected is booked justnow </center>'
-              });
-              $scope.printer="Retry";
-            }            
-      }).error(function(data){
-           var alertPopup = $ionicPopup.alert({
-                 title: 'Network problem',
-                 template: '<center> Kindly retry again </center>'
-              });
-           $scope.printer="Retry";
-                      
-      });
-            
-          console.log(2);
-         }else if($scope.st.tflag == 2){
-           console.log(3); 
-           var geturl = "http://www.avanettech.co.ke/avttms/app/booked_seat.php?Busid="+$scope.st.busid+"&dat="+$scope.st.rdt+"&seat_id="+$scope.st.tkts+"&fare="+$scope.busfaren+"&frm="+$scope.st.dest+"&to="+$scope.st.sour+"&agent_id="+$scope.st.agent_id+"&firstname="+$scope.fnn+"&lastname="+$scope.lnn+"&id="+$scope.idnn+"&mob="+$scope.mbnn;
-           $http.get(geturl).success(function(response){  
-            var checkst = response[0];     
-            if(checkst.status == "success"){ 
-               $scope.st.tikno = checkst.ticket;
-               $scope.st.busname = checkst.busname;
-               $scope.st.busaddress = checkst.busaddress;
-             var alertPopup = $ionicPopup.alert({
-                 title: 'Ticket has been booked',
-                 template: 'your seat        :'+checkst.SeatNumber+
-                '<br>Ticket no      :'+checkst.ticket+'<br> Total amount     :'+checkst.Total_Amount+
-                  '<br> Date of Journey :'+checkst.Date_of_Journey
-              });                                         
-            $scope.print();
-             }
-            
-         if(checkst.status == "failure"){
-              console.log('succ');
-               var alertPopup = $ionicPopup.alert({
-                 title: 'Booking Failure',
-                 template: '<center> The seats you have selected is booked justnow </center>'
-              });
-            }            
-      }).error(function(data){
-            var alertPopup = $ionicPopup.alert({
-                 title: 'Network problem',
-                 template: '<center> Kindly retry again </center>'
-              });
-             $scope.printer="Retry";
-                      
-      });
-          
-        }
-     }
-     console.log(geturl);
-    
-    $scope.print = function(){
-        $scope.printer="Booked";
-
-        $window.location.href="#/app/sum";
-  }
-}
- 
-});
-}])
-
-//Print ticket
-.controller('sumCtrl',['$rootScope','$scope','$http','$location','$window','bus','$ionicHistory','$ionicSideMenuDelegate','$ionicLoading','$ionicPopup','$timeout','$state',  function($rootScope,$scope,$http,$location,$window,bus,$ionicHistory,$ionicSideMenuDelegate,$ionicLoading,$ionicPopup,$timeout,$state) {
-  $scope.st = bus;
-
-   $scope.$on('$ionicView.enter', function() {
-    $ionicHistory.nextViewOptions({
-        disableAnimate: true,
-        disableBack: true
-      });
+        $scope.url          = $scope.fs.url;
+        $scope.companyname  = $scope.fs.companyname;
+        $scope.companyaddr  = $scope.fs.companyaddr;
+        $scope.$on('$ionicView.enter', function() {
+            $ionicHistory.nextViewOptions({
+                disableAnimate: true,
+                disableBack: true
+        });
      
 
     $scope.busname = $scope.st.busname;
@@ -886,9 +305,14 @@ angular.module('starter.controllers', [])
   });
 }])
 
-//Booking summary
-.controller('BooksumCtrl',['$rootScope','$scope','$http','$location','$window','bus','$ionicHistory','$ionicSideMenuDelegate','$ionicLoading','$ionicPopup','$timeout','$state',  function($rootScope,$scope,$http,$location,$window,bus,$ionicHistory,$ionicSideMenuDelegate,$ionicLoading,$ionicPopup,$timeout,$state) {
-  $scope.st = bus;
+//Daily Summary
+.controller('DailysummCtrl',['$rootScope','$scope','$http','$location','$window','fuelstation','$ionicHistory','$ionicSideMenuDelegate','$ionicLoading','$ionicPopup','$timeout','$state',  function($rootScope,$scope,$http,$location,$window,fuelstation,$ionicHistory,$ionicSideMenuDelegate,$ionicLoading,$ionicPopup,$timeout,$state) {
+
+        $scope.fs           = fuelstation;
+
+        $scope.url          = $scope.fs.url;
+        $scope.companyname  = $scope.fs.companyname;
+        $scope.companyaddr  = $scope.fs.companyaddr;
    $scope.$on('$ionicView.enter', function() { //+
   $scope.loading =true;
   $scope.notfound = false;
@@ -948,420 +372,5 @@ angular.module('starter.controllers', [])
          }
       
       })
-
-}])
-
-//OLD - History Control
-.controller('historyCtrl',['$rootScope','$scope','$http','$filter','$location','$window','bus', '$state', function($rootScope,$scope,$http,$filter,$location,$window,bus,$state) {
-  $scope.bk = bus;
-   $scope.$on('$ionicView.enter', function() { //+ 
-  $scope.results = []
-   $scope.notfound =false;
-   $scope.dataLoaded = false;
-   $scope.loading =true;
-   $scope.cks = false;
-
-   var geturl ="http://www.avanettech.co.ke/avttms/app/history1.php?agent_id="+$scope.bk.agent_id;
-    console.log(geturl);   
-       $http.get(geturl).success(function(response){     
-           
-              if(response[0]){
-                    $scope.loading =false;
-                    $scope.dataLoaded = true;
-                    $scope.results = response;
-              }else{
-                  $scope.loading=false;
-                  $scope.dataLoaded=false;
-                  $scope.notfound = true;
-              }
-        
-          console.log(geturl);
-           }).error(function(data){
-            $scope.loading =false;
-            $scope.dataLoaded = false;
-            $scope.notfound = true;
-                });
-}) 
-
-   $scope.cancel = function(v1,v2,v3,v4,v5,v6){
-      $scope.bk.cbusid  =v1;
-      $scope.bk.cticket =v2;
-      $scope.bk.camt = v3.trim().split(',')[0] * v3.split(',').length ;
-      $scope.bk.seat = v4;
-      $scope.bk.bname = v5;
-      $scope.bk.btype = v6;
-      $window.location.href="#/app/cancel";
-   }
-}])
-
-
-//Cancel ticket
-.controller('cancelCtrl',['$rootScope','$scope','$http','$location','$window','bus','$ionicHistory','$ionicSideMenuDelegate','$ionicLoading','$ionicPopup','$timeout','$state',  function($rootScope,$scope,$http,$location,$window,bus,$ionicHistory,$ionicSideMenuDelegate,$ionicLoading,$ionicPopup,$timeout,$state) {
-  $scope.bk = bus;
-  $scope.cl=$scope.bk.seat;
-  $scope.can = "Cancel"
-  $scope.results = [];
-  $scope.cancelbutton=true;
-
-   
-   $scope.$on('$ionicView.enter', function() { 
-     var test = $scope.bk.seat.split(',');
-     $scope.clst = $scope.cl;
-      $scope.changing = function(du){
-          var temp = du.split(',');
-          for(var i=0;i<temp.length;i++){
-               if(test.indexOf(temp[i]) == -1){
-                  var alertPopxup = $ionicPopup.alert({
-                    title: 'Ticket Cancellation Failure',
-                    template: ' <center> Please, Check seat no! </center>'
-                  });
-                 return false;
-               }
-          }
-       $scope.clst=du;
-       $scope.cancel();
-  }
-   $scope.cancel = function(){//+$scope.bk.agent_id
-     var flag= "no";
-        var alertPopup = $ionicPopup.alert({
-                    title: 'Conformation',
-                    template: '<center> Are you sure to cancel? </center>',
-                    buttons: [{ // Array[Object] (optional). Buttons to place in the popup footer.
-                      text: 'Yes',
-                      type: 'button-positive',
-                      onTap: function(e) {
-                        // Returning a value will cause the promise to resolve with the given value.
-                       return true;
-                      }
-                    },{
-                    text: 'No',
-                    type: 'button-default',
-                    onTap: function(e) {
-                       // e.preventDefault() will stop the popup from closing when tapped.
-                      return false;
-                      }
-                    }]
-
-                  });           
-        alertPopup.then(function(res) {
-     if(res) {
-       console.log('You are sure'); 
-      console.log($scope.cl);
-    $scope.can = "cancelling..."
-  var geturl ="http://www.avanettech.co.ke/avttms/app/cancel.php?agent_id="+$scope.bk.agent_id+"&bus_id="+$scope.bk.cbusid+"&seat_no="+$scope.clst+"&ticket_id="+$scope.bk.cticket;
-    console.log(geturl);   
-       $http.get(geturl).success(function(response){     
-           
-              if(response[0]){
-                  if(response[0].status = "success"){
-                   
-                    var alertPopup = $ionicPopup.alert({
-                    title: 'Ticket Cancellation',
-                    template: '<center> Ticket has been cancelled </center> <br> <center> Thank you </center>'
-                  });
-                   $scope.can = "cancelled";
-                    $scope.cancelbutton=false;
-                  }
-
-              }else{
-                  var alertPopup = $ionicPopup.alert({
-                    title: 'Ticket Cancellation Failure',
-                    template: '<center> please retry again </center>'
-                  });
-              }
-        
-          console.log(geturl);
-           }).error(function(data){
-                var alertPopup = $ionicPopup.alert({
-                    title: 'Network problem',
-                    template: '<center> Retry again </center>'
-                  });             
-            });
-          
-           } else {
-       console.log('You are not sure');
-     }
-   
-  });
-      }
-}); 
-
-    $scope.back = function(){
-    $window.location.href="#/app/history"
-  }
-
-}])
-
-//Create delivery
-.controller('deliveryCtrl',['$rootScope','$scope','$http','$filter','$location','$window','bus', '$ionicHistory','$ionicSideMenuDelegate','$ionicLoading','$ionicPopup','$timeout','$state', function($rootScope,$scope,$http,$filter,$location,$window,bus,$ionicHistory,$ionicSideMenuDelegate,$ionicLoading,$ionicPopup,$timeout,$state) {
-    $scope.$on('$ionicView.enter', function() {
-    $ionicHistory.nextViewOptions({
-        disableAnimate: true,
-        disableBack: true
-    });
-    $scope.bus= bus;
-    $scope.cancel = function(){
-        $window.location.href="#/app/playlists";
-    }
-    $scope.printer = "Create delivery";
-    //$scope.selbus = ""; //bus to issue delivery
-    $scope.bus.servcharge = 0; // service charge amount
-    $scope.bus.othercharge = 0; //other charge amount
-    $scope.bus.grossamt = 0; //initialize gross amount
-    $scope.spinner1=true;
-
-    $http.get($scope.url+"buses.php").success(function(ref){
-        $scope.buses = ref;
-        $scope.spinner1  = false;
-        console.log($scope.buses);
-    });
-
-    $scope.create = function(){
-        $scope.printer = "Creating delivery...";
-        if( this.servcharge && this.selbus ){
-
-            $scope.bus.servcharge  = this.servcharge;
-            if (this.othercharge == null){
-                $scope.bus.othercharge = 0;
-            } else {
-                $scope.bus.othercharge = this.othercharge;
-            }
-            $scope.bus.selbus = this.selbus;
-
-            console.log(this.servcharge);
-            console.log(this.othercharge);
-            console.log(this.selbus);
-
-            //Execute delivery
-            var geturl = $scope.url+"delivery.php?busname="+$scope.bus.selbus+"&servch="+$scope.bus.servcharge+"&otherch="+$scope.bus.othercharge;
-            $http.get(geturl).success(function(response){
-                var checksts = response;
-                if(checksts.status == "success"){
-                    $scope.bus.deliverynum = checksts.deliverynum;
-                    $scope.bus.vehowner = checksts.ownername;
-                    $scope.bus.sour = checksts.fromcityname;
-                    $scope.bus.dest = checksts.tocityname;
-                    $scope.bus.passnum = checksts.numpass;
-                    $scope.bus.grossamt = checksts.grossamt;
-                    $scope.bus.totdeduct = checksts.totdeduct;
-                    $scope.bus.netamt = checksts.netamt;
-                    $scope.bus.agent_id = checksts.agent_id;
-                    $scope.bus.busname = checksts.busname;
-                    $scope.bus.busaddress = checksts.busaddress;
-                    $scope.bus.agentname = checksts.agent_name;
-
-                    var alertPopup = $ionicPopup.alert({
-                        title: 'Delivery receipt created',
-                        template: 'For Vehicle  :'+checksts.selbus+
-                        '<br> Delivery #        :'+checksts.deliverynum+
-                        '<br> Gross amount      :'+checksts.grossamt+
-                        '<br> Total deduction   :'+checksts.totdeduct+
-                        '<br> Net amount        :'+checksts.netamt
-                    });
-                    $scope.printer="Created";
-                    $window.location.href="#/app/deliverysum";
-                }
-                if(checksts.status == "failure"){
-                    console.log('succ');
-                    var alertPopup = $ionicPopup.alert({
-                        title: 'Created Delivery Failure',
-                        template: '<center> Please try again </center>'
-                    });
-                    $scope.printer="Retry";
-                }
-            }).error(function(data){
-
-                var alertPopup = $ionicPopup.alert({
-                    title: 'Network problem',
-                    template: '<center> Kindly retry again </center>'
-                });
-                $scope.printer="Retry";
-
-            });
-
-            console.log(geturl);
-
-        }
-
-        else {
-            var alertPopup = $ionicPopup.alert({
-            title: 'Create Delivery Warning',
-            template: '<center> Please choose vehicle and input service charge </center>'
-            });
-        }
-
-
-    }
-
-    $scope.print = function(){
-        $scope.printer="Created";
-        $window.location.href="#/app/deliverysum";
-    }
-    });
- }])
-
-//Print delivery receipt
-.controller('deliverysumCtrl',['$rootScope','$scope','$http','$location','$window','bus','$ionicHistory','$ionicSideMenuDelegate','$ionicLoading','$ionicPopup','$timeout','$state',  function($rootScope,$scope,$http,$location,$window,bus,$ionicHistory,$ionicSideMenuDelegate,$ionicLoading,$ionicPopup,$timeout,$state) {
-    $scope.st = bus;
-
-    $scope.$on('$ionicView.enter', function() {
-        $ionicHistory.nextViewOptions({
-            disableAnimate: true,
-            disableBack: true
-    });
-
-    $scope.printer="Print";
-    $scope.busname = $scope.st.busname;
-    $scope.busaddress = $scope.st.busaddress;
-    $scope.deliverynum = $scope.st.deliverynum;
-    $scope.vehowner = $scope.st.vehowner;
-    $scope.selbus = $scope.st.selbus;
-    $scope.sour = $scope.st.sour;
-    $scope.dest = $scope.st.dest;
-    $scope.passnum = $scope.st.passnum;
-    $scope.grossamt = $scope.st.grossamt;
-    $scope.totdeduct = $scope.st.totdeduct;
-    $scope.netamt = $scope.st.netamt;
-    $scope.servcharge = $scope.st.servcharge;
-    $scope.othercharge = $scope.st.othercharge;
-	$scope.agentname = $scope.st.agentname;
-
-    $scope.cancel = function(){
-        $window.location.href="#/app/playlists";
-    }
-
-    $scope.caller = function(){
-        $scope.printer="printing..";
-        var jsonnd = {func:"dreceipt",busname:$scope.busname, busaddress:$scope.busaddress, deliverynum:$scope.deliverynum,
-        vehowner:$scope.vehowner, selbus:$scope.selbus, source:$scope.sour, destination:$scope.dest,
-        passnum:$scope.passnum, grossamt:$scope.grossamt, servcharge:$scope.servcharge,
-        othercharge:$scope.othercharge, totdeduct:$scope.totdeduct, netamt:$scope.netamt, agentname:$scope.agentname};
-      console.log(jsonnd);
-      console.log(JSON.stringify(jsonnd));
-       cordova.plugins.Keyboard.justprint(jsonnd);
-        $scope.printer="printed";
-    }
-
-    });
-}])
-
-
-.controller('historypCtrl',['$rootScope','$scope','$http','$filter','$location','$window','bus', '$state', function($rootScope,$scope,$http,$filter,$location,$window,bus,$state) {
-  $scope.bk = bus;
-   $scope.$on('$ionicView.enter', function() { //+ 
-  $scope.results = []
-   $scope.notfound =false;
-   $scope.dataLoaded = false;
-   $scope.loading =true;
-   $scope.cks = false;
-  
-       var geturl ="http://www.avanettech.co.ke/avttms/app/history1.php?agent_id="+$scope.bk.agent_id;
-    console.log(geturl);   
-       $http.get(geturl).success(function(response){     
-           
-              if(response[0]){
-                    $scope.loading =false;
-                    $scope.dataLoaded = true;
-                    $scope.results = response;
-              }else{
-                  $scope.loading=false;
-                  $scope.dataLoaded=false;
-                  $scope.notfound = true;
-              }
-        
-          console.log(geturl);
-           }).error(function(data){
-            $scope.loading =false;
-            $scope.dataLoaded = false;
-            $scope.notfound = true;
-                });
-}) 
-
-   $scope.cancel = function(v1,v2,v3,v4){
-      $scope.bk.pbusid  =v1;
-      $scope.bk.ptick = v2;
-      $scope.bk.pdate = v3;
-      $scope.bk.pbusname = v4;
-      $window.location.href="#/app/printsum";
-   }
-
-}])
-
-//Print ticket
-.controller('printsumCtrl',['$rootScope','$scope','$http','$location','$window','bus','$ionicHistory','$ionicSideMenuDelegate','$ionicLoading','$ionicPopup','$timeout','$state',  function($rootScope,$scope,$http,$location,$window,bus,$ionicHistory,$ionicSideMenuDelegate,$ionicLoading,$ionicPopup,$timeout,$state) {
-  $scope.st = bus;
-  $scope.$on('$ionicView.enter', function() {
-     $ionicHistory.nextViewOptions({
-        disableAnimate: true,
-        disableBack: true
-      });
-       $ionicLoading.show({template: 'Loading'});
-      //$scope.busname = $scope.st.busname;
-    //$scope.busaddress = $scope.st.busaddress;
-  var geturl = "http://www.avanettech.co.ke/avttms/app/ticket.php?bus_id="+$scope.st.pbusid+"&dat="+$scope.st.pdate+"&ticket="+$scope.st.ptick;
-  console.log(geturl);
-  $http.get(geturl).success(function(response){
-
-    $scope.str = response;
-     $ionicLoading.hide();
-  
-  $scope.fn = $scope.str.firstname.split(','); 
-  $scope.ln = $scope.str.lastname.split(','); 
-  $scope.mob = $scope.str.mob.split(',');
-  $scope.idn = $scope.str.id.split(',');
-    $scope.busname = $scope.str.busname;
-    $scope.busaddress = $scope.str.busaddress;
-  $scope.names = [];
-  $scope.ids = [];
-  $scope.printer="Print"
-  $scope.mobs = [];
-        $scope.source = $scope.str.frm;
-        $scope.destination = $scope.str.to;
-        $scope.dater=$scope.str.dat;
-        $scope.busfare = $scope.str.fare;
-      //$scope.total = $scope.str.mob.split(',').length * $scope.busfare;
-    $scope.total = $scope.st.totfare;
-
-  $scope.dnarray = $scope.str.id.split(',');
-
-   for(var i=0;i < $scope.dnarray.length ; i++){
-    //console.log($scope.fn[i]+' '+$scope.ln[i]);
-    var temp =$scope.fn[i]+' '+$scope.ln[i];
-      $scope.names.push(temp);
-      $scope.ids.push($scope.idn[i]);
-      $scope.mobs.push($scope.mob[i]);
-    } 
-
-   $scope.cancel = function(){
-        $window.location.href="#/app/playlists";
-   } 
-
-   $scope.caller = function(){  
-      
-      if(this.busname.length > 30){
-       var alertPopup = $ionicPopup.alert({
-                    title: 'Print Restriction',
-                    template: '<center> Bus name should be less than 32 character </center>'
-            });
-       return false;
-      }
-      if(this.busaddress.length > 30){
-           var alertPopup = $ionicPopup.alert({
-                    title: 'Print Restriction',
-                    template: '<center> Bus Address should be less than 32 character </center>'
-            });
-           return false;
-      }
-      $scope.printer="printing..";
-
-       var jsonn = {func:"sum",dater:$scope.dater,busname:$scope.busname,busaddress:$scope.busaddress,ticket:$scope.st.ptick,source:$scope.source,destination:$scope.destination,
-      busfare:$scope.busfare,firstname:$scope.str.firstname,lastname:$scope.str.lastname,mobile:$scope.str.mob,
-      idn:$scope.str.id,total:$scope.total,seat:$scope.str.seat_id,busid:$scope.st.pbusname,agent:$scope.st.agentname};
-      console.log(jsonn);
-       cordova.plugins.Keyboard.justprint(jsonn);
-      $scope.printer="printed";
-      }
-  });
-});
 
 }])

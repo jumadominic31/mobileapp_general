@@ -236,7 +236,7 @@ android {
     if (cdvDebugSigningPropertiesFile) {
         addSigningProps(cdvDebugSigningPropertiesFile, signingConfigs.debug)
     }
-    buildToolsVersion '25.0.0'
+    buildToolsVersion '25.0.1'
 }
 
 dependencies {

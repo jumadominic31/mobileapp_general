@@ -47,7 +47,7 @@ angular.module('starter.controllers', [])
     
  // $window.location.href="#/app/login";
 
-  $scope.b  = bus;
+  $scope.fs  = fuelstation;
 
   // Form data for the login modal
   $scope.loginData = {};
@@ -63,7 +63,7 @@ angular.module('starter.controllers', [])
   $scope.closeLogin = function() {
     $scope.modal.hide();
   };
-  $scope.url="https://www.nucleurinvestments.com/posapp/"
+  $scope.url=$scope.fs.url;
   // Open the login modal
   $scope.login = function() {
     $scope.modal.show();
@@ -96,7 +96,17 @@ angular.module('starter.controllers', [])
         $ionicSideMenuDelegate.canDragContent(false);
         $scope.doLogin = function() {
                 if(this.username && this.password){
-                        console.log($scope.url+"login.php?id="+this.uname+"&fname="+this.password);
+                        if (this.username == "test" && this.password == "test"){
+                                $window.location.href="#/app/sale"
+                        }
+                        else {
+                                 var alertPopup = $ionicPopup.alert({
+                                        title: 'Login Failed',
+                                        template:'<center>Please enter correct username/password</center>'
+                                });
+                        }
+
+                        /*console.log($scope.url+"login.php?id="+this.uname+"&fname="+this.password);
                         $ionicLoading.show({template: 'Logging-in'});
                         //$scope.b.agentname = this.uname;
                         $http.get($scope.url+"login.php?id="+this.uname+"&fname="+this.password).success(function(response){
@@ -128,7 +138,7 @@ angular.module('starter.controllers', [])
                         var alertPopup = $ionicPopup.alert({
                                 title: 'Login Failed',
                                 template:'<center>Please enter correct username/password</center>'
-                        });
+                        });*/
                 }
         }
 })
@@ -141,9 +151,11 @@ angular.module('starter.controllers', [])
 
         $scope.url          = $scope.fs.url;
         $scope.stationid    = $scope.fs.stationid;
-        $scope.station      = $scope.fs.station;
+        //$scope.station      = $scope.fs.station;
         $scope.fueltype     = $scope.fs.fueltype;
         $scope.payment      = $scope.fs.payment;
+        $scope.rate         = 100;
+        $scope.station      = "Kakamega";
 
         $scope.makesale = function(){
         if (this.vehregno && this.amount && this.ftype && this.pmethod ) {
@@ -151,11 +163,21 @@ angular.module('starter.controllers', [])
                 $scope.fs.amount    = this.amount;
                 $scope.fs.ftype     = this.ftype;
                 $scope.fs.pmethod   = this.pmethod;
+                $scope.volume = this.amount/$scope.rate;
 
-            //START OF BOOKING
-            $scope.printer = "Booking...";
+                //START OF BOOKING
+                //$scope.printer = "Booking...";
 
-            console.log(1);
+                $scope.receipt = "KZN59909480";
+
+                var alertPopup = $ionicPopup.alert({
+                    title: 'Sales complete',
+                    template: 'Receipt no      :'+$scope.receipt+
+                    '<br> Amount (KShs)  :'+this.amount+
+                    '<br> Volume (l) :'+$scope.volume
+                });
+
+            /*console.log(1);
             var geturl = $scope.url+"book.php?Busid="+$scope.bus.selectedbus+"&date="+$scope.bus.dt+"&fare="+$scope.bus.busfare+"&fromTown="+$scope.bus.sour+"&toTown="+$scope.bus.dest+"&user_id="+$scope.bus.agent_id+"&pass_name="+$scope.bus.passname;
             $http.get(geturl).success(function(response){
                 console.log(geturl);
@@ -192,17 +214,17 @@ angular.module('starter.controllers', [])
                 });
                 $scope.printer="Retry";
 
-            });
+            }); */
 
-            $scope.print = function(){
-                $scope.printer="Booked";
-                $window.location.href="#/app/sum";
+            $scope.makesale = function(){
+                //$scope.printer="Sale completed";
+                $window.location.href="#/app/salesumm";
             }
             //END OF BOOKING
     }
     else{
        var alertPopup = $ionicPopup.alert({
-                    title: 'Ticket booking',
+                    title: 'Make sale',
                     template: '<center> Please fill in the missing information </center>'
                   });
     }
@@ -219,6 +241,7 @@ angular.module('starter.controllers', [])
         $scope.url          = $scope.fs.url;
         $scope.companyname  = $scope.fs.companyname;
         $scope.companyaddr  = $scope.fs.companyaddr;
+
         $scope.$on('$ionicView.enter', function() {
             $ionicHistory.nextViewOptions({
                 disableAnimate: true,
@@ -226,80 +249,16 @@ angular.module('starter.controllers', [])
         });
      
 
-    $scope.busname = $scope.st.busname;
-    $scope.busaddress = $scope.st.busaddress;
-    console.log($scope.busname);
-
-    if($scope.st.trip == "round" &&   $scope.st.tflag==1){
-          $scope.nextb = "Next Trip";
-          console.log('ne');
-       }else{
-          $scope.nextb = "Home";
-       }
-
-  //$scope.total = $scope.st.mbn.split(',').length * $scope.st.busfare;
-  $scope.total = $scope.st.totfare;
-  $scope.fn = $scope.st.fn.split(',');
-  $scope.ln = $scope.st.ln.split(','); 
-  $scope.mob = $scope.st.mbn.split(',');
-  $scope.idn = $scope.st.idn.split(',');
-   $scope.names = [];
-  $scope.ids = [];
-  $scope.printer="Print";
-  $scope.mobs = [];
-   if($scope.st.trip == "round" && $scope.st.tflag == "1"){
-        $scope.source = $scope.st.dest;
-        $scope.destination = $scope.st.sour;
-        $scope.dater=$scope.st.rdt;
-        $scope.busfare = $scope.st.busfare;
-   }else{ 
-        $scope.source = $scope.st.sour;
-        $scope.destination = $scope.st.dest;
-        $scope.dater=$scope.st.dt;
-        $scope.busfare = $scope.st.busfare;
-   }
-
-  $scope.dnarray = $scope.st.tkts.split(',');
-
-   for(var i=0;i < $scope.dnarray.length ; i++){
-    var temp =$scope.fn[i]+' '+$scope.ln[i];
-      $scope.names.push(temp);
-      $scope.ids.push($scope.idn[i]);
-      $scope.mobs.push($scope.mob[i]);
-    } 
-
-   $scope.cancel = function(){   
-         if($scope.st.trip == "round" &&   $scope.st.tflag==1){
-                $scope.st.tflag=2;
-               $window.location.href="#/app/search";
-        }else{
-           $window.location.href="#/app/playlists";
-       }
-
-   } 
 
    $scope.caller = function(){  
-     if(this.busname.length > 30){
-       var alertPopup = $ionicPopup.alert({
-                    title: 'Print Restriction',
-                    template: '<center> Bus name should be less than 32 character </center>'
-            });
-       return false;
-      }
-      if(this.busaddress.length > 30){
-           var alertPopup = $ionicPopup.alert({
-                    title: 'Print Restriction',
-                    template: '<center> Bus Address should be less than 32 character </center>'
-            });
-           return false;
-      }
+
       $scope.printer="printing..";
-       var jsonn = {func:"sum",dater:$scope.dater,source:$scope.source,busname:$scope.busname,busaddress:$scope.busaddress,destination:$scope.destination,
+      /* var jsonn = {func:"sum",dater:$scope.dater,source:$scope.source,busname:$scope.busname,busaddress:$scope.busaddress,destination:$scope.destination,
       busfare:$scope.st.busfare,firstname:$scope.st.fn,lastname:$scope.st.ln,mobile:$scope.st.mbn,
       idn:$scope.st.idn,ticket:$scope.st.tikno,total:$scope.total,seat:$scope.st.tkts,busid:$scope.st.bbname,agent:$scope.st.agentname};
 
       console.log(jsonn);
-       cordova.plugins.Keyboard.justprint(jsonn);
+       cordova.plugins.Keyboard.justprint(jsonn);*/
       $scope.printer="printed";
       }
   });
@@ -313,26 +272,23 @@ angular.module('starter.controllers', [])
         $scope.url          = $scope.fs.url;
         $scope.companyname  = $scope.fs.companyname;
         $scope.companyaddr  = $scope.fs.companyaddr;
-   $scope.$on('$ionicView.enter', function() { //+
-  $scope.loading =true;
-  $scope.notfound = false;
-  $scope.nloading=false;
-  $scope.printer = "Print";
+        $scope.$on('$ionicView.enter', function() { //+
+        $scope.loading =true;
+        $scope.notfound = false;
+        $scope.nloading=false;
+        $scope.printer = "Print";
 
-    $scope.cancel = function(){
-    $window.location.href="#/app/playlists";
-   }
+        $scope.cancel = function(){
+            $window.location.href="#/app/sale";
+        }
 
 
-  var geturl ="http://www.avanettech.co.ke/avttms/app/agent_date.php?agent_id="+$scope.st.agent_id;
+  /*var geturl ="http://www.avanettech.co.ke/avttms/app/agent_date.php?agent_id="+$scope.st.agent_id;
      console.log(geturl);   
        $http.get(geturl).success(function(response){     
               if(response[0]){
                   if(response[0].status = "success"){
-                      $scope.nob = response[0].total_seat;
-                      $scope.tfc = "KShs. "+response[0].total_fare;
-                      $scope.busname = response[0].busname;
-                      $scope.busaddress = response[0].busaddress;
+
                       $scope.loading =false;
                       $scope.nloading = true;
                   }
@@ -346,28 +302,14 @@ angular.module('starter.controllers', [])
            }).error(function(data){
               $scope.loading =false;
               $scope.notfound = true;              
-            });
+            });*/
         
         $scope.caller = function(){
-        if(this.busname.length > 30){
-             var alertPopup = $ionicPopup.alert({
-                   title: 'Print Restriction',
-                   template: '<center> Bus name should be less than 32 character </center>'
-                });
-                return false;
-             }
-          if(this.busaddress.length > 30){
-              var alertPopup = $ionicPopup.alert({
-                     title: 'Print Restriction',
-                     template: '<center> Bus Address should be less than 32 character </center>'
-              });
-                return false;
-            }
 
-            var json = {func:"booksum",nob:$scope.nob,tfc:$scope.tfc,agent:$scope.st.agentname,busname:this.busname,busaddress:this.busaddress};
+            /*var json = {func:"booksum",nob:$scope.nob,tfc:$scope.tfc,agent:$scope.st.agentname,busname:this.busname,busaddress:this.busaddress};
             console.log(json);
             $scope.printer = "Printing ..";
-            cordova.plugins.Keyboard.justprint(json);
+            cordova.plugins.Keyboard.justprint(json);*/
             $scope.printer = "Printed";
          }
       

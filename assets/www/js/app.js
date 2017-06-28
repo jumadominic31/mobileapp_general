@@ -37,7 +37,7 @@ angular.module('starter', ['ionic','starter.controllers','ngAnimate'])
       views: {
         'menuContent': {
           templateUrl: 'templates/sale.html',
-          controller: 'BookCtrl'
+          controller: 'SaleCtrl'
         }
       }
     })
@@ -74,7 +74,7 @@ angular.module('starter', ['ionic','starter.controllers','ngAnimate'])
     views: {
       'menuContent': {
         templateUrl: 'templates/playlist.html',
-        controller: 'PlaylistCtrl'
+        controller: 'SaleCtrl'
       }
     }
   });

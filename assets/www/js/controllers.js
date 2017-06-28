@@ -285,26 +285,43 @@ angular.module('starter.controllers', [])
 
         $scope.fs           = fuelstation;
 
-        $scope.url          = $scope.fs.url;
-        $scope.companyname  = $scope.fs.companyname;
-        $scope.companyaddr  = $scope.fs.companyaddr;
+        $scope.fs.summ_amt     = 10000;
+        $scope.fs.summ_cash    = 8000;
+        $scope.fs.summ_mpesa   = 2000;
+        $scope.fs.summ_volume  = 150;
+        $scope.fs.summ_petrol  = 70;
+        $scope.fs.summ_diesel  = 80;
+
         $scope.$on('$ionicView.enter', function() { //+
-        $scope.loading =true;
-        $scope.notfound = false;
-        $scope.nloading=false;
-        $scope.printer = "Print";
+            //$scope.loading =true;
+            //$scope.notfound = false;
+            //$scope.nloading=false;
+            $scope.printer = "Print";
 
         $scope.cancel = function(){
             $window.location.href="#/app/sale";
         }
 
+        $scope.url          = $scope.fs.url;
+        $scope.companyname  = $scope.fs.companyname;
+        $scope.companyaddr  = $scope.fs.companyaddr;
+        $scope.station      = $scope.fs.station;
+        $scope.summ_amt     = $scope.fs.summ_amt;
+        $scope.summ_cash    = $scope.fs.summ_cash;
+        $scope.summ_mpesa   = $scope.fs.summ_mpesa;
+        $scope.summ_volume  = $scope.fs.summ_volume;
+        $scope.summ_petrol  = $scope.fs.summ_petrol;
+        $scope.summ_diesel  = $scope.fs.summ_diesel;
+        $scope.loading      = false;
+        $scope.notfound     = false;
+        $scope.loading      = true;
 
   /*var geturl ="http://www.avanettech.co.ke/avttms/app/agent_date.php?agent_id="+$scope.st.agent_id;
      console.log(geturl);   
        $http.get(geturl).success(function(response){     
               if(response[0]){
                   if(response[0].status = "success"){
-
+                      //Results go here
                       $scope.loading =false;
                       $scope.nloading = true;
                   }

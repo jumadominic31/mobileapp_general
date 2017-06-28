@@ -154,8 +154,10 @@ angular.module('starter.controllers', [])
         //$scope.station      = $scope.fs.station;
         $scope.fueltype     = $scope.fs.fueltype;
         $scope.payment      = $scope.fs.payment;
-        $scope.rate         = 100;
-        $scope.station      = "Kakamega";
+        $scope.fs.rate      = 100;
+        $scope.fs.station   = "Kakamega";
+        $scope.rate         = $scope.fs.rate;
+        $scope.station      = $scope.fs.station;
 
         $scope.makesale = function(){
         if (this.vehregno && this.amount && this.ftype && this.pmethod ) {
@@ -163,12 +165,14 @@ angular.module('starter.controllers', [])
                 $scope.fs.amount    = this.amount;
                 $scope.fs.ftype     = this.ftype;
                 $scope.fs.pmethod   = this.pmethod;
-                $scope.volume = this.amount/$scope.rate;
+                $scope.fs.volume    = this.amount/$scope.rate;
+                $scope.volume       = $scope.fs.volume;
 
                 //START OF BOOKING
                 //$scope.printer = "Booking...";
 
-                $scope.receipt = "KZN59909480";
+                $scope.fs.receipt = "KZN59909480";
+                $scope.receipt = $scope.fs.receipt;
 
                 var alertPopup = $ionicPopup.alert({
                     title: 'Sales complete',
@@ -176,6 +180,9 @@ angular.module('starter.controllers', [])
                     '<br> Amount (KShs)  :'+this.amount+
                     '<br> Volume (l) :'+$scope.volume
                 });
+
+                //$scope.printer="Sale completed";
+                $window.location.href="#/app/salesumm";
 
             /*console.log(1);
             var geturl = $scope.url+"book.php?Busid="+$scope.bus.selectedbus+"&date="+$scope.bus.dt+"&fare="+$scope.bus.busfare+"&fromTown="+$scope.bus.sour+"&toTown="+$scope.bus.dest+"&user_id="+$scope.bus.agent_id+"&pass_name="+$scope.bus.passname;
@@ -216,10 +223,7 @@ angular.module('starter.controllers', [])
 
             }); */
 
-            $scope.makesale = function(){
-                //$scope.printer="Sale completed";
-                $window.location.href="#/app/salesumm";
-            }
+
             //END OF BOOKING
     }
     else{
@@ -238,9 +242,18 @@ angular.module('starter.controllers', [])
 
         $scope.fs           = fuelstation;
 
+        $scope.printer      = "Print";
+
         $scope.url          = $scope.fs.url;
         $scope.companyname  = $scope.fs.companyname;
         $scope.companyaddr  = $scope.fs.companyaddr;
+        $scope.station      = $scope.fs.station;
+        $scope.receipt      = $scope.fs.receipt;
+        $scope.vehregno     = $scope.fs.vehregno;
+        $scope.amount    = $scope.fs.amount;
+        $scope.ftype     = $scope.fs.ftype;
+        $scope.pmethod   = $scope.fs.pmethod;
+        $scope.volume    = $scope.fs.volume;
 
         $scope.$on('$ionicView.enter', function() {
             $ionicHistory.nextViewOptions({
@@ -249,18 +262,21 @@ angular.module('starter.controllers', [])
         });
      
 
+        $scope.cancel = function(){
+            $window.location.href="#/app/sale";
+        }
 
-   $scope.caller = function(){  
+        $scope.caller = function(){
 
-      $scope.printer="printing..";
-      /* var jsonn = {func:"sum",dater:$scope.dater,source:$scope.source,busname:$scope.busname,busaddress:$scope.busaddress,destination:$scope.destination,
-      busfare:$scope.st.busfare,firstname:$scope.st.fn,lastname:$scope.st.ln,mobile:$scope.st.mbn,
-      idn:$scope.st.idn,ticket:$scope.st.tikno,total:$scope.total,seat:$scope.st.tkts,busid:$scope.st.bbname,agent:$scope.st.agentname};
+            $scope.printer="printing..";
+              /* var jsonn = {func:"sum",dater:$scope.dater,source:$scope.source,busname:$scope.busname,busaddress:$scope.busaddress,destination:$scope.destination,
+              busfare:$scope.st.busfare,firstname:$scope.st.fn,lastname:$scope.st.ln,mobile:$scope.st.mbn,
+              idn:$scope.st.idn,ticket:$scope.st.tikno,total:$scope.total,seat:$scope.st.tkts,busid:$scope.st.bbname,agent:$scope.st.agentname};
 
-      console.log(jsonn);
-       cordova.plugins.Keyboard.justprint(jsonn);*/
-      $scope.printer="printed";
-      }
+              console.log(jsonn);
+               cordova.plugins.Keyboard.justprint(jsonn);*/
+            $scope.printer="Printed";
+        }
   });
 }])
 

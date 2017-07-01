@@ -26,7 +26,8 @@ angular.module('starter.controllers', [])
      this.summ_volume   = ""; //Daily summary volume
      this.summ_diesel   = ""; //Daily summary diesel volume
      this.summ_petrol   = ""; //Daily summary petrol volume
-     this.rate_diesel   = ""; //Daily petrol fuel selling rate
+     this.rate_diesel   = ""; //Daily diesel fuel selling rate
+     this.rate_petrol   = ""; //Daily petrol fuel selling rate
      this.url           = "https://avanettech.co.ke/fuelstapp/api";
 })
 
@@ -147,17 +148,44 @@ angular.module('starter.controllers', [])
 //Sale details
 .controller('SaleCtrl',['$rootScope','$scope','$http','$filter','$location','$window','fuelstation', '$ionicHistory','$ionicSideMenuDelegate','$ionicLoading','$ionicPopup','$timeout','$state', function($rootScope,$scope,$http,$filter,$location,$window,fuelstation,$ionicHistory,$ionicSideMenuDelegate,$ionicLoading,$ionicPopup,$timeout,$state) {
 
+        //$httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
         $scope.fs           = fuelstation;
 
-        $scope.url          = $scope.fs.url;
+        var date = new Date();
+        $scope.rate_date = date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
+
+        $scope.txns_url          = $scope.fs.url+'/txns';
+        $scope.rates_url          = $scope.fs.url+'/rates/'+$scope.rate_date;
+
+        $scope.fs.userid    = '1';
+        $scope.userid       = $scope.fs.userid;
+        $scope.fs.stationid = '1';
         $scope.stationid    = $scope.fs.stationid;
-        //$scope.station      = $scope.fs.station;
+
         $scope.fueltype     = $scope.fs.fueltype;
         $scope.payment      = $scope.fs.payment;
-        $scope.fs.rate      = 100;
+
         $scope.fs.station   = "Kakamega";
-        $scope.rate         = $scope.fs.rate;
         $scope.station      = $scope.fs.station;
+
+        $http.get($scope.rates_url).
+        then(function successCallback(response) {
+            //console.log(JSON.stringify(response));
+            for (var i = 0; i < response.data.length; i++) {
+                var data = response.data[i];
+                if (data.fueltype == 'diesel'){
+                    $scope.rate_diesel = data.sellprice;
+                    $scope.fs.rate_diesel = $scope.rate_diesel;
+                    //console.log($scope.rate_diesel);
+                } else if (data.fueltype == 'petrol'){
+                    $scope.rate_petrol = data.sellprice;
+                    $scope.fs.rate_petrol = $scope.rate_petrol;
+                    //console.log($scope.rate_petrol);
+                }
+            }
+        }, function errorCallback(response) {
+           console.log(response.message);
+        });
 
         $scope.makesale = function(){
         if (this.vehregno && this.amount && this.ftype && this.pmethod ) {
@@ -165,66 +193,56 @@ angular.module('starter.controllers', [])
                 $scope.fs.amount    = this.amount;
                 $scope.fs.ftype     = this.ftype;
                 $scope.fs.pmethod   = this.pmethod;
-                $scope.fs.volume    = this.amount/$scope.rate;
-                $scope.volume       = $scope.fs.volume;
 
                 //START OF BOOKING
                 //$scope.printer = "Booking...";
-
-                $scope.fs.receipt = "KZN59909480";
-                $scope.receipt = $scope.fs.receipt;
-
-                var alertPopup = $ionicPopup.alert({
-                    title: 'Sales complete',
-                    template: 'Receipt no      :'+$scope.receipt+
-                    '<br> Amount (KShs)  :'+this.amount+
-                    '<br> Volume (l) :'+$scope.volume
-                });
-
+                //$scope.fs.receipt = "KZN59909480";
                 //$scope.printer="Sale completed";
-                $window.location.href="#/app/salesumm";
 
-            /*console.log(1);
-            var geturl = $scope.url+"book.php?Busid="+$scope.bus.selectedbus+"&date="+$scope.bus.dt+"&fare="+$scope.bus.busfare+"&fromTown="+$scope.bus.sour+"&toTown="+$scope.bus.dest+"&user_id="+$scope.bus.agent_id+"&pass_name="+$scope.bus.passname;
-            $http.get(geturl).success(function(response){
-                console.log(geturl);
-                console.log(response);
-                var checkst = response[0];
-                console.log(checkst.status);
-                if(checkst.status == "success"){
-                    $scope.bus.tikno = checkst.ticket;
-
-                    $scope.bus.totfare = checkst.busfare;
-                    var alertPopup = $ionicPopup.alert({
-                        title: 'Ticket has been booked',
-                        template: 'Ticket no      :'+checkst.ticket+
-                        '<br> Fare amount     :'+checkst.busfare+
-                        '<br> Date of Journey :'+checkst.Date_of_Journey
-                    });
-                    $scope.print();
+                if (this.ftype == 'Diesel'){
+                    $scope.rate = $scope.fs.rate_diesel;
+                } else if (this.ftype == 'Petrol'){
+                    $scope.rate = $scope.fs.rate_petrol;
                 }
 
-                if(checkst.status == "failure"){
-                    console.log('succ');
+                $scope.fs.volume    = Math.round(this.amount/$scope.rate*100)/100;
+                $scope.volume       = $scope.fs.volume;
+
+                var txn = {
+                        userid:     $scope.userid,
+                        stationid:  $scope.stationid,
+                        vehregno:   this.vehregno,
+                        amount:     this.amount,
+                        volume:     $scope.volume,
+                        sellprice:  $scope.rate,
+                        fueltype:   this.ftype,
+                        paymethod:  this.pmethod
+                }
+
+                var config = {
+                    headers : {
+                        'Content-Type': 'application/json;'
+                    }
+                }
+
+                $http.post($scope.txns_url, txn, config).
+                 then(function successCallback(response) {
+                    console.log(JSON.stringify(response));
+                    $scope.receipt = response.data.receiptno;
+                    $scope.fs.receipt = $scope.receipt;
                     var alertPopup = $ionicPopup.alert({
+                        title: 'Sales complete',
+                        template: 'Receipt no      :'+$scope.receipt+
+                        '<br> Amount (KShs)  :'+$scope.fs.amount+
+                        '<br> Volume (l) :'+$scope.volume
+                    });
+                    $window.location.href="#/app/salesumm";
+                  }, function errorCallback(response) {
+                   var alertPopup = $ionicPopup.alert({
                         title: 'Booking Failure',
                         template: '<center> You cannot book the vehicle now </center>'
                     });
-                    $scope.printer="Retry";
-
-                }
-            }).error(function(data){
-
-                var alertPopup = $ionicPopup.alert({
-                    title: 'Network problem',
-                    template: '<center> Kindly retry again </center>'
-                });
-                $scope.printer="Retry";
-
-            }); */
-
-
-            //END OF BOOKING
+                  });
     }
     else{
        var alertPopup = $ionicPopup.alert({
@@ -285,58 +303,84 @@ angular.module('starter.controllers', [])
 
         $scope.fs           = fuelstation;
 
-        $scope.fs.summ_amt     = 10000;
-        $scope.fs.summ_cash    = 8000;
-        $scope.fs.summ_mpesa   = 2000;
-        $scope.fs.summ_volume  = 150;
-        $scope.fs.summ_petrol  = 70;
-        $scope.fs.summ_diesel  = 80;
+        var date = new Date();
+        $scope.txnsumm_date = date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
+
+        $scope.userid = '1';
+
+        $scope.summ_amt     = 0;
+        $scope.summ_cash    = 0;
+        $scope.summ_mpesa   = 0;
+        $scope.summ_volume  = 0;
+        $scope.summ_petrol  = 0;
+        $scope.summ_diesel  = 0;
+
+        $scope.txnsumm_url     = $scope.fs.url+'/txns/'+$scope.userid+'/'+$scope.txnsumm_date;
+
+
+
+
 
         $scope.$on('$ionicView.enter', function() { //+
-            //$scope.loading =true;
-            //$scope.notfound = false;
-            //$scope.nloading=false;
+            $scope.loading  = true;
+            $scope.notfound = false;
+            $scope.nloading = false;
             $scope.printer = "Print";
 
         $scope.cancel = function(){
             $window.location.href="#/app/sale";
         }
 
-        $scope.url          = $scope.fs.url;
+        $http.get($scope.txnsumm_url).
+        then(function successCallback(response) {
+            console.log(JSON.stringify(response));
+            for (var i = 0; i < response.data.length; i++) {
+                var data = response.data[i];
+
+                if (data.fueltype == 'diesel'){
+                    $scope.summ_diesel = $scope.summ_diesel + Math.round(parseFloat(data.total_vol)*100)/100;
+
+                    if (data.paymethod == 'Cash'){
+                        $scope.summ_cash = $scope.summ_cash + Math.round(parseFloat(data.total_sales)*100)/100;
+
+                    } else if (data.paymethod == 'MPesa'){
+                       $scope.summ_mpesa = $scope.summ_mpesa + Math.round(parseFloat(data.total_sales)*100)/100;
+
+                   }
+
+                } else if (data.fueltype == 'petrol'){
+                    $scope.summ_petrol = $scope.summ_petrol + Math.round(parseFloat(data.total_vol)*100)/100;
+
+                    if (data.paymethod == 'Cash'){
+                        $scope.summ_cash = $scope.summ_cash + Math.round(parseFloat(data.total_sales)*100)/100;
+
+                    } else if (data.paymethod == 'MPesa'){
+                       $scope.summ_mpesa = $scope.summ_mpesa + Math.round(parseFloat(data.total_sales)*100)/100;
+
+                   }
+                }
+            }
+            $scope.summ_amt     = Math.round(($scope.summ_cash + $scope.summ_mpesa)*100)/100;
+            $scope.summ_volume  = Math.round(($scope.summ_petrol + $scope.summ_diesel)*100)/100 ;
+            $scope.loading =false;
+            $scope.nloading = true;
+        }, function errorCallback(response) {
+           console.log(response.message);
+        });
+
+
         $scope.companyname  = $scope.fs.companyname;
         $scope.companyaddr  = $scope.fs.companyaddr;
         $scope.station      = $scope.fs.station;
-        $scope.summ_amt     = $scope.fs.summ_amt;
-        $scope.summ_cash    = $scope.fs.summ_cash;
-        $scope.summ_mpesa   = $scope.fs.summ_mpesa;
-        $scope.summ_volume  = $scope.fs.summ_volume;
-        $scope.summ_petrol  = $scope.fs.summ_petrol;
-        $scope.summ_diesel  = $scope.fs.summ_diesel;
-        $scope.loading      = false;
-        $scope.notfound     = false;
-        $scope.loading      = true;
+        $scope.fs.summ_amt     = $scope.summ_amt;
+        $scope.fs.summ_cash    = $scope.summ_cash;
+        $scope.fs.summ_mpesa   = $scope.summ_mpesa;
+        $scope.fs.summ_volume  = $scope.summ_volume;
+        $scope.fs.summ_petrol  = $scope.summ_petrol;
+        $scope.fs.summ_diesel  = $scope.summ_diesel;
 
-  /*var geturl ="http://www.avanettech.co.ke/avttms/app/agent_date.php?agent_id="+$scope.st.agent_id;
-     console.log(geturl);   
-       $http.get(geturl).success(function(response){     
-              if(response[0]){
-                  if(response[0].status = "success"){
-                      //Results go here
-                      $scope.loading =false;
-                      $scope.nloading = true;
-                  }
 
-              }else{
-                  $scope.loading =false;
-                  $scope.notfound = true;
-              }
-        
-          console.log(geturl);
-           }).error(function(data){
-              $scope.loading =false;
-              $scope.notfound = true;              
-            });*/
-        
+
         $scope.caller = function(){
 
             /*var json = {func:"booksum",nob:$scope.nob,tfc:$scope.tfc,agent:$scope.st.agentname,busname:this.busname,busaddress:this.busaddress};

@@ -39,6 +39,67 @@ public class IonicKeyboard extends CordovaPlugin  {
                     try {
                         JSONObject b = args.getJSONObject(0);
                         String func   = b.getString("func");
+
+                        if("fuelstsale".equals(func)) {
+                            String companyname	= b.getString("companyname");
+                            String companyaddr	= b.getString("companyaddr");
+                            String station		= b.getString("station");
+                            String receipt		= b.getString("receipt");
+                            String vehregno		= b.getString("vehregno");
+                            String amount		= b.getString("amount");
+                            String ftype		= b.getString("ftype");
+                            String pmethod		= b.getString("pmethod");
+                            String volume		= b.getString("volume");
+                            String username		= b.getString("username");
+
+                            Calendar c = Calendar.getInstance();
+                            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            String formattedDate = df.format(c.getTime());
+
+                            Log.d("date", 			" " + formattedDate);
+                            Log.d("funcname", 		func);
+                            Log.d("companyname",	companyname);
+                            Log.d("companyaddr", 	companyaddr);
+                            Log.d("station", 		station);
+                            Log.d("receipt", 		receipt);
+                            Log.d("vehregno",		vehregno);
+                            Log.d("amount", 		amount);
+                            Log.d("ftype", 			ftype);
+                            Log.d("pmethod", 		pmethod);
+                            Log.d("volume", 		volume);
+                            Log.d("username", 		username);
+                        }
+
+                        if("fuelstdailysumm".equals(func)) {
+                            String companyname	= b.getString("companyname");
+                            String companyaddr	= b.getString("companyaddr");
+                            String station		= b.getString("station");
+                            String username		= b.getString("username");
+                            String summ_amt		= b.getString("summ_amt");
+                            String summ_cash	= b.getString("summ_cash");
+                            String summ_mpesa	= b.getString("summ_mpesa");
+                            String summ_volume	= b.getString("summ_volume");
+                            String summ_petrol	= b.getString("summ_petrol");
+                            String summ_diesel	= b.getString("summ_diesel");
+
+                            Calendar c = Calendar.getInstance();
+                            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            String formattedDate = df.format(c.getTime());
+
+                            Log.d("date", 			" " + formattedDate);
+                            Log.d("funcname", 		func);
+                            Log.d("companyname",	companyname);
+                            Log.d("companyaddr", 	companyaddr);
+                            Log.d("station", 		station);
+                            Log.d("username", 		username);
+                            Log.d("summ_amt", 		summ_amt);
+                            Log.d("summ_cash",		summ_cash);
+                            Log.d("summ_mpesa", 	summ_mpesa);
+                            Log.d("summ_volume", 	summ_volume);
+                            Log.d("summ_petrol", 	summ_petrol);
+                            Log.d("summ_diesel", 	summ_diesel);
+                        }
+
                         if("sum".equals(func)) {
                             String dater = b.getString("dater");
                             String cname = b.getString("busname");

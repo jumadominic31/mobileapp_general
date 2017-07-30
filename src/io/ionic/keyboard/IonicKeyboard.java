@@ -77,6 +77,7 @@ public class IonicKeyboard extends CordovaPlugin  {
                             String username		= b.getString("username");
                             String summ_amt		= b.getString("summ_amt");
                             String summ_cash	= b.getString("summ_cash");
+                            String summ_credit	= b.getString("summ_credit");
                             String summ_mpesa	= b.getString("summ_mpesa");
                             String summ_volume	= b.getString("summ_volume");
                             String summ_petrol	= b.getString("summ_petrol");
@@ -94,6 +95,7 @@ public class IonicKeyboard extends CordovaPlugin  {
                             Log.d("username", 		username);
                             Log.d("summ_amt", 		summ_amt);
                             Log.d("summ_cash",		summ_cash);
+                            Log.d("summ_credit",	summ_credit);
                             Log.d("summ_mpesa", 	summ_mpesa);
                             Log.d("summ_volume", 	summ_volume);
                             Log.d("summ_petrol", 	summ_petrol);

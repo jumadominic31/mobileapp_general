@@ -13,7 +13,7 @@ angular.module('starter.controllers', [])
      this.amount        = "";
      this.volume        = "";
      this.fueltype      = ["Diesel", "Petrol"];
-     this.payment       = ["Cash", "MPesa"];
+     this.payment       = ["Cash", "MPesa", "Credit"];
      this.ftype         = ""; //fuel type filled
      this.pmethod       = ""; //payment method used
      this.companyname   = "NUCLEUR INVESTMENTS LTD";
@@ -22,6 +22,7 @@ angular.module('starter.controllers', [])
      this.time          = "";
      this.summ_amt      = ""; //Daily summary amount
      this.summ_cash     = ""; //Daily summary cash amount
+     this.summ_credit   = ""; //Daily summary credit amount
      this.summ_mpesa    = ""; //Daily summary MPesa amount
      this.summ_volume   = ""; //Daily summary volume
      this.summ_diesel   = ""; //Daily summary diesel volume
@@ -29,7 +30,7 @@ angular.module('starter.controllers', [])
      this.rate_diesel   = ""; //Daily diesel fuel selling rate
      this.rate_petrol   = ""; //Daily petrol fuel selling rate
      //this.url           = "https://avanettech.co.ke/fuelstapp/api";
-     this.url           = "http://10.0.2.2:8000/api";
+     this.url           = "https://avanettech.co.ke/fuelstapp/api";
      this.token         = "";
 })
 
@@ -123,6 +124,7 @@ angular.module('starter.controllers', [])
         $scope.fs           = fuelstation;
         $scope.token        = $scope.fs.token;
         $scope.username     = $scope.fs.username;
+        $scope.isDisabled   = false;
 
         var date = new Date();
         $scope.rate_date = date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
@@ -151,60 +153,61 @@ angular.module('starter.controllers', [])
         ////
         $scope.txns_url          = $scope.fs.url+'/txns?token='+$scope.token;
 
-        //$scope.fs.station   = "Uthiru";
+        $scope.rates_url    = $scope.fs.url+'/rates/'+$scope.rate_date+'?token='+$scope.token;
+        console.log($scope.rates_url);
+        $http.get($scope.rates_url).
+        then(function successCallback(response) {
+            console.log(JSON.stringify(response));
+            for (var i = 0; i < response.data.length; i++) {
+                var data = response.data[i];
+                if (data.fueltype == 'diesel'){
+                    $scope.rate_diesel = data.sellprice;
+                    $scope.fs.rate_diesel = $scope.rate_diesel;
+                    console.log($scope.rate_diesel);
+                } else if (data.fueltype == 'petrol'){
+                    $scope.rate_petrol = data.sellprice;
+                    $scope.fs.rate_petrol = $scope.rate_petrol;
+                    console.log($scope.rate_petrol);
+                }
+            }
+        }, function errorCallback(response) {
+           console.log(response);
+        });
+
 
 
         $scope.fueltype     = $scope.fs.fueltype;
         $scope.payment      = $scope.fs.payment;
 
-
         $scope.makesale = function(){
 
                 if (this.vehregno && this.amount && this.ftype && this.pmethod ) {
+                        $scope.isDisabled   = true;
                         $scope.vehregno  = this.vehregno;
                         $scope.amount    = this.amount;
                         $scope.ftype     = this.ftype;
                         $scope.pmethod   = this.pmethod;
+                        $scope.pumpid    = this.pumpid;
+
+                        console.log($scope.ftype);
 
                         $scope.fs.vehregno  = this.vehregno;
                         $scope.fs.amount    = this.amount;
                         $scope.fs.ftype     = this.ftype;
                         $scope.fs.pmethod   = this.pmethod;
 
-                        $scope.rates_url    = $scope.fs.url+'/rates/'+$scope.rate_date+'?token='+$scope.token;
-                        console.log($scope.rates_url);
-                        $http.get($scope.rates_url).
-                        then(function successCallback(response) {
-                            console.log(JSON.stringify(response));
-                            for (var i = 0; i < response.data.length; i++) {
-                                var data = response.data[i];
-                                if (data.fueltype == 'diesel'){
-                                    $scope.rate_diesel = data.sellprice;
-                                    $scope.fs.rate_diesel = $scope.rate_diesel;
-                                    console.log($scope.rate_diesel);
-                                } else if (data.fueltype == 'petrol'){
-                                    $scope.rate_petrol = data.sellprice;
-                                    $scope.fs.rate_petrol = $scope.rate_petrol;
-                                    console.log($scope.rate_petrol);
-                                }
-                            }
-                            console.log($scope.ftype);
-                            if ($scope.ftype == 'Diesel'){
-                                $scope.rate = $scope.fs.rate_diesel;
-                                console.log($scope.rate);
-                            } else if ($scope.ftype == 'Petrol'){
-                                $scope.rate = $scope.fs.rate_petrol;
-                                console.log($scope.rate);
-                            }
-
-                            $scope.volume    = Math.round($scope.amount/$scope.rate*100)/100;
-                            $scope.fs.volume = $scope.volume;
+                        if ($scope.ftype == 'Diesel'){
+                            $scope.rate = $scope.fs.rate_diesel;
                             console.log($scope.rate);
-                            console.log($scope.volume);
+                        } else if ($scope.ftype == 'Petrol'){
+                            $scope.rate = $scope.fs.rate_petrol;
+                            console.log($scope.rate);
+                        }
 
-                        }, function errorCallback(response) {
-                           console.log(response);
-                        });
+                        $scope.volume    = Math.round($scope.amount/$scope.rate*100)/100;
+                        $scope.fs.volume = $scope.volume;
+                        console.log($scope.rate);
+                        console.log($scope.volume);
 
                         $timeout( function () {
                             var txn = {
@@ -215,7 +218,8 @@ angular.module('starter.controllers', [])
                                     volume:     $scope.volume,
                                     sellprice:  $scope.rate,
                                     fueltype:   $scope.ftype,
-                                    paymethod:  $scope.pmethod
+                                    paymethod:  $scope.pmethod,
+                                    pumpid:     $scope.pumpid
                             }
 
                             var config = {
@@ -230,27 +234,35 @@ angular.module('starter.controllers', [])
                                 $scope.receipt = response.data.txn.receiptno;
                                 $scope.fs.receipt = $scope.receipt;
                                 console.log($scope.receipt);
+                                if ($scope.receipt == ""){
+                                    $scope.isDisabled   = false;
+                                    var alertPopup = $ionicPopup.alert({
+                                        title: 'Sale NOT completed',
+                                        template: 'Try again'
+                                    });
+                                }
                                 var alertPopup = $ionicPopup.alert({
-                                    title: 'Sales complete',
+                                    title: 'Sale complete',
                                     template: 'Receipt no      :'+$scope.receipt+
                                     '<br> Amount (KShs)  :'+$scope.fs.amount+
                                     '<br> Volume (l) :'+$scope.volume
                                 });
                                 $window.location.href="#/app/salesumm";
                               }, function errorCallback(response) {
+                              $scope.isDisabled   = false;
                               console.log(JSON.stringify(response));
                                var alertPopup = $ionicPopup.alert({
                                     title: 'Sale transaction failed',
                                     template: '<center> You cannot make the sale now</center>'
                                 });
                               });
-                              }, 5000);
+                              }, 4000);
 
                              //time
                              $scope.time = 0;
                              //timer callback
                              var timer = function() {
-                               if( $scope.time < 5000 ) {
+                               if( $scope.time < 4000 ) {
                                   $scope.time += 1000;
                                   $timeout(timer, 1000);
                                }
@@ -295,7 +307,7 @@ angular.module('starter.controllers', [])
         });
         $scope.loading =false;
         $scope.nloading = true;
-     
+
 
         $scope.cancel = function(){
             $window.location.href="#/app/sale";
@@ -329,6 +341,7 @@ angular.module('starter.controllers', [])
 
         $scope.summ_amt     = 0;
         $scope.summ_cash    = 0;
+        $scope.summ_credit  = 0;
         $scope.summ_mpesa   = 0;
         $scope.summ_volume  = 0;
         $scope.summ_petrol  = 0;
@@ -353,10 +366,10 @@ angular.module('starter.controllers', [])
 
                     if (data.paymethod == 'Cash'){
                         $scope.summ_cash = $scope.summ_cash + Math.round(parseFloat(data.total_sales)*100)/100;
-
+                    } else if (data.paymethod == 'Credit'){
+                        $scope.summ_credit = $scope.summ_credit + Math.round(parseFloat(data.total_sales)*100)/100;
                     } else if (data.paymethod == 'MPesa'){
                        $scope.summ_mpesa = $scope.summ_mpesa + Math.round(parseFloat(data.total_sales)*100)/100;
-
                    }
 
                 } else if (data.fueltype == 'petrol'){
@@ -365,13 +378,16 @@ angular.module('starter.controllers', [])
                     if (data.paymethod == 'Cash'){
                         $scope.summ_cash = $scope.summ_cash + Math.round(parseFloat(data.total_sales)*100)/100;
 
+                    } else if (data.paymethod == 'Credit'){
+                        $scope.summ_credit = $scope.summ_credit + Math.round(parseFloat(data.total_sales)*100)/100;
+
                     } else if (data.paymethod == 'MPesa'){
                        $scope.summ_mpesa = $scope.summ_mpesa + Math.round(parseFloat(data.total_sales)*100)/100;
 
                    }
                 }
             }
-            $scope.summ_amt     = Math.round(($scope.summ_cash + $scope.summ_mpesa)*100)/100;
+            $scope.summ_amt     = Math.round(($scope.summ_cash + $scope.summ_credit+ $scope.summ_mpesa)*100)/100;
             $scope.summ_volume  = Math.round(($scope.summ_petrol + $scope.summ_diesel)*100)/100 ;
             $scope.loading =false;
             $scope.nloading = true;
@@ -380,6 +396,7 @@ angular.module('starter.controllers', [])
             $scope.station      = $scope.fs.station;
             $scope.fs.summ_amt     = $scope.summ_amt;
             $scope.fs.summ_cash    = $scope.summ_cash;
+            $scope.fs.summ_credit  = $scope.summ_credit;
             $scope.fs.summ_mpesa   = $scope.summ_mpesa;
             $scope.fs.summ_volume  = $scope.summ_volume;
             $scope.fs.summ_petrol  = $scope.summ_petrol;
@@ -394,9 +411,9 @@ angular.module('starter.controllers', [])
         $scope.caller = function(){
 
             var json = {func:"fuelstdailysumm", companyname:$scope.companyname, companyaddr:$scope.companyaddr,
-              station:$scope.station, username:$scope.username, summ_amt:$scope.summ_amt, summ_cash:$scope.summ_cash,
-              summ_mpesa:$scope.summ_mpesa, summ_volume:$scope.summ_volume, summ_petrol:$scope.summ_petrol,
-              summ_diesel:$scope.summ_diesel};
+                  station:$scope.station, username:$scope.username, summ_amt:$scope.summ_amt, summ_cash:$scope.summ_cash,
+                   summ_credit:$scope.summ_credit,summ_mpesa:$scope.summ_mpesa, summ_volume:$scope.summ_volume, summ_petrol:$scope.summ_petrol,
+                  summ_diesel:$scope.summ_diesel};
 
             $scope.printer = "Printing ..";
             cordova.plugins.Keyboard.justprint(json);
@@ -404,5 +421,83 @@ angular.module('starter.controllers', [])
          }
       
       })
+
+}])
+
+//Daily Rate
+.controller('DailyrateCtrl',['$rootScope','$scope','$http','$location','$window','fuelstation','$ionicHistory','$ionicSideMenuDelegate','$ionicLoading','$ionicPopup','$timeout','$state',  function($rootScope,$scope,$http,$location,$window,fuelstation,$ionicHistory,$ionicSideMenuDelegate,$ionicLoading,$ionicPopup,$timeout,$state) {
+        $scope.fs           = fuelstation;
+        $scope.rate_diesel  = $scope.fs.rate_diesel;
+        $scope.rate_petrol  = $scope.fs.rate_petrol;
+
+        var date = new Date();
+        $scope.rate_date = date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2);
+}])
+
+//Change Password
+.controller('ChangepassCtrl',['$rootScope','$timeout','$scope','$http','$filter','$location','$window','fuelstation', '$ionicHistory','$ionicSideMenuDelegate','$ionicLoading','$ionicPopup','$timeout','$state', function($rootScope,$timeout,$scope,$http,$filter,$location,$window,fuelstation,$ionicHistory,$ionicSideMenuDelegate,$ionicLoading,$ionicPopup,$timeout,$state) {
+
+        $scope.fs       = fuelstation;
+        $scope.username = $scope.fs.username;
+        $scope.token    = $scope.fs.token;
+
+        $scope.isDisabled   = false;
+
+        ///get userid and stationid
+        $scope.changepass_url = $scope.fs.url+'/user/'+$scope.username+'/changepassword?token='+$scope.token;
+
+        $scope.changepass = function(){
+                if (this.curr_password && this.new_password && this.new_password_2 ) {
+                    $scope.curr_password    = this.curr_password;
+                    $scope.new_password     = this.new_password;
+                    $scope.new_password_2   = this.new_password_2;
+
+                    if (this.new_password != this.new_password_2){
+                        var alertPopup = $ionicPopup.alert({
+                            title: 'New passwords not same',
+                            template: '<center> The 2 new passwords must be same</center>'
+                        });
+                        //$window.location.href="#/app/changepass";
+
+                    } else {
+
+                        var password = {
+                                curr_password:  $scope.curr_password,
+                                new_password:   $scope.new_password,
+                                new_password_2: $scope.new_password_2
+                        }
+
+                        var config = {
+                            headers : {
+                                'Content-Type': 'application/json;'
+                            }
+                        }
+
+                         $http.post($scope.changepass_url, password, config).
+                         then(function successCallback(response) {
+                            console.log(JSON.stringify(response));
+                            var alertPopup = $ionicPopup.alert({
+                                title: 'Password changed',
+                                template: 'Please relogin'
+                            });
+                            $window.location.href="#/app/browse";
+                          }, function errorCallback(response) {
+                           console.log(JSON.stringify(response));
+                           $scope.message = response.data.message;
+                           var alertPopup = $ionicPopup.alert({
+                                title: 'Password change failed',
+                                template: '<center>'+$scope.message+'</center>'
+                            });
+                          });
+                     }
+
+        }
+            else{
+               var alertPopup = $ionicPopup.alert({
+                            title: 'Change Password',
+                            template: '<center> Please fill in the missing information </center>'
+                          });
+            }
+        }
 
 }])

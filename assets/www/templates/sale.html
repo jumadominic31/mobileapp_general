@@ -11,7 +11,7 @@
                     <span class="input-label formfont">Vehicle Reg No</span>
                     <input type="text" ng-model="vehregno" placeholder="Enter Name" >
                 </label>
-                    <label class="item item-input item-select">
+                <label class="item item-input item-select">
                     <span class="input-label formfont"><i class=" iconsize ion-ios-location-outline"> </i>Fuel Type</span>
                     <select ng-model="ftype" ng-options="item for item in fueltype">
                     </select>
@@ -26,9 +26,14 @@
                     <input type="number" ng-model="amount">
                     </select>
                 </label>
+                <label class="item item-input">
+                    <span class="input-label formfont"><i class=" iconsize ion-ios-location-outline"> </i>Pump ID</span>
+                    <input type="number" ng-model="pumpid">
+                    </select>
+                </label>
             </div>
         </div>
-        <center> <button class="button  bstyle button-positive" >Sell fuel</button></center><br>
+        <center> <button class="button  bstyle button-positive" ng-disabled="isDisabled" >Sell fuel</button></center><br>
         </form>
     </ion-content>
 </ion-view>

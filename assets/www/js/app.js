@@ -59,6 +59,24 @@ angular.module('starter', ['ionic','starter.controllers','ngAnimate'])
         }
       }
     })
+    .state('app.dailyrate', {
+          url: '/dailyrate',
+          views: {
+            'menuContent': {
+              templateUrl: 'templates/dailyrate.html',
+              controller: 'DailyrateCtrl'
+            }
+          }
+        })
+    .state('app.changepass', {
+      url: '/changepass',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/changepass.html',
+          controller: 'ChangepassCtrl'
+        }
+      }
+    })
   .state('app.browse', {
       url: '/browse',
       cache:false,

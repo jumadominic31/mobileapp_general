@@ -30,7 +30,7 @@ angular.module('starter.controllers', [])
      this.rate_diesel   = ""; //Daily diesel fuel selling rate
      this.rate_petrol   = ""; //Daily petrol fuel selling rate
      //this.url           = "https://avanettech.co.ke/fuelstapp/api";
-     this.url           = "https://avanettech.co.ke/fuelstapp/api";
+     this.url           = "http://10.0.2.2:8000/api";
      this.token         = "";
 })
 
@@ -145,6 +145,18 @@ angular.module('starter.controllers', [])
             $scope.fs.stationid    = $scope.stationid;
             $scope.fs.station      = $scope.station;
             console.log($scope.fs.station);
+
+            //get pump names
+            $scope.pumps_url = $scope.fs.url+'/pump/'+$scope.fs.userid+'?token='+$scope.token;
+            $http.get($scope.pumps_url).
+            then(function successCallback(response) {
+                console.log(JSON.stringify(response));
+                $scope.pumps = response.data;
+                $scope.spinner = false;
+            }, function errorCallback(response) {
+               console.log(JSON.stringify(response));
+            });
+
         }, function errorCallback(response) {
            console.log(JSON.stringify(response));
         });
@@ -174,8 +186,6 @@ angular.module('starter.controllers', [])
            console.log(response);
         });
 
-
-
         $scope.fueltype     = $scope.fs.fueltype;
         $scope.payment      = $scope.fs.payment;
 
@@ -183,15 +193,15 @@ angular.module('starter.controllers', [])
 
                 if (this.vehregno && this.amount && this.ftype && this.pmethod ) {
                         $scope.isDisabled   = true;
-                        $scope.vehregno  = this.vehregno;
+                        $scope.vehregno  = this.vehregno.replace(/\s/g,'');
                         $scope.amount    = this.amount;
                         $scope.ftype     = this.ftype;
                         $scope.pmethod   = this.pmethod;
-                        $scope.pumpid    = this.pumpid;
+                        $scope.pumpid    = this.selectedpump;
 
                         console.log($scope.ftype);
 
-                        $scope.fs.vehregno  = this.vehregno;
+                        $scope.fs.vehregno  = this.vehregno.replace(/\s/g,'');
                         $scope.fs.amount    = this.amount;
                         $scope.fs.ftype     = this.ftype;
                         $scope.fs.pmethod   = this.pmethod;

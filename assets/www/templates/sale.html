@@ -12,23 +12,27 @@
                     <input type="text" ng-model="vehregno" placeholder="Enter Name" >
                 </label>
                 <label class="item item-input item-select">
-                    <span class="input-label formfont"><i class=" iconsize ion-ios-location-outline"> </i>Fuel Type</span>
+                    <span class="input-label formfont"><i class=" iconsize ion-android-car"> </i>Fuel Type</span>
                     <select ng-model="ftype" ng-options="item for item in fueltype">
                     </select>
                 </label>
                 <label class="item item-input item-select">
-                    <span class="input-label formfont"><i class=" iconsize ion-ios-location-outline"> </i>Payment Method</span>
+                    <span class="input-label formfont"><i class=" iconsize ion-cash"> </i>Payment Method</span>
                     <select ng-model="pmethod" ng-options="item for item in payment">
                     </select>
                 </label>
                 <label class="item item-input">
-                    <span class="input-label formfont"><i class=" iconsize ion-ios-location-outline"> </i>Amount</span>
+                    <span class="input-label formfont"><i class=" iconsize ion-social-usd"> </i>Amount</span>
                     <input type="number" ng-model="amount">
                     </select>
                 </label>
-                <label class="item item-input">
-                    <span class="input-label formfont"><i class=" iconsize ion-ios-location-outline"> </i>Pump ID</span>
-                    <input type="number" ng-model="pumpid">
+                <label class="item item-input item-select">
+                    <span class="input-label formfont"><i class=" iconsize ion-android-checkbox-outline"> </i>Pump Name</span>
+                    <ion-spinner icon="dots" class="spinerdot" ng-show="spinner"></ion-spinner>
+                    <select class="formfont" ng-model="selectedpump" >
+                        <option ng-show="false" value=""></option>
+                        <option ng-repeat="(key, value) in pumps" ng-value="{{key}}" >{{value}}</option>
+                        <!--<option ng-repeat="p in pumps track by $index" ng-value="p" >{{p}}</option>-->
                     </select>
                 </label>
             </div>

@@ -29,8 +29,8 @@ angular.module('starter.controllers', [])
      this.summ_petrol   = ""; //Daily summary petrol volume
      this.rate_diesel   = ""; //Daily diesel fuel selling rate
      this.rate_petrol   = ""; //Daily petrol fuel selling rate
-     //this.url           = "https://avanettech.co.ke/fuelstapp/api";
-     this.url           = "http://10.0.2.2:8000/api";
+     this.url           = "https://nucleurinvestments.com/fuelstapp/api";
+     //this.url           = "http://10.0.2.2:8000/api";
      this.token         = "";
 })
 

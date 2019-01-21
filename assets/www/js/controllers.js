@@ -18,6 +18,7 @@ angular.module('starter.controllers', [])
      this.pmethod       = ""; //payment method used
      this.companyname   = "NUCLEUR INVESTMENTS LTD";
      this.companyaddr   = "NAIROBI";
+     this.receipt_header = "";
      this.date          = "";
      this.time          = "";
      this.summ_amt      = ""; //Daily summary amount
@@ -141,9 +142,11 @@ angular.module('starter.controllers', [])
             $scope.userid = response.data[0].id;
             $scope.stationid = response.data[0].stationid;
             $scope.station = response.data[0].station;
+            $scope.receipt_header = response.data[0].receipt_header;
             $scope.fs.userid       = $scope.userid;
             $scope.fs.stationid    = $scope.stationid;
             $scope.fs.station      = $scope.station;
+            $scope.fs.receipt_header = $scope.receipt_header;
             console.log($scope.fs.station);
 
             //get pump names
@@ -298,6 +301,7 @@ angular.module('starter.controllers', [])
         $scope.printer      = "Print";
         $scope.companyname  = $scope.fs.companyname;
         $scope.companyaddr  = $scope.fs.companyaddr;
+        $scope.receipt_header = $scope.fs.receipt_header;
         $scope.username       = $scope.fs.username;
         $scope.station      = $scope.fs.station;
         $scope.receipt      = $scope.fs.receipt;
@@ -326,7 +330,7 @@ angular.module('starter.controllers', [])
         $scope.caller = function(){
 
             $scope.printer="printing..";
-            var jsonn = {func:"fuelstsale", companyname:$scope.companyname, companyaddr:$scope.companyaddr,
+            var jsonn = {func:"fuelstsale", companyname:$scope.receipt_header, companyaddr:$scope.companyaddr,
               station:$scope.station, receipt:$scope.receipt, vehregno:$scope.vehregno, amount:$scope.amount,
               ftype: $scope.ftype, pmethod:$scope.pmethod, volume:$scope.volume, username:$scope.username};
             console.log(jsonn);
@@ -403,6 +407,7 @@ angular.module('starter.controllers', [])
             $scope.nloading = true;
             $scope.companyname  = $scope.fs.companyname;
             $scope.companyaddr  = $scope.fs.companyaddr;
+            $scope.receipt_header = $scope.fs.receipt_header;
             $scope.station      = $scope.fs.station;
             $scope.fs.summ_amt     = $scope.summ_amt;
             $scope.fs.summ_cash    = $scope.summ_cash;
@@ -420,7 +425,7 @@ angular.module('starter.controllers', [])
         }
         $scope.caller = function(){
 
-            var json = {func:"fuelstdailysumm", companyname:$scope.companyname, companyaddr:$scope.companyaddr,
+            var json = {func:"fuelstdailysumm", companyname:$scope.receipt_header, companyaddr:$scope.companyaddr,
                   station:$scope.station, username:$scope.username, summ_amt:$scope.summ_amt, summ_cash:$scope.summ_cash,
                    summ_credit:$scope.summ_credit,summ_mpesa:$scope.summ_mpesa, summ_volume:$scope.summ_volume, summ_petrol:$scope.summ_petrol,
                   summ_diesel:$scope.summ_diesel};
